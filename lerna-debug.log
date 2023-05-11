@@ -1,11 +1,5 @@
-15 error Error: Command failed with exit code 1: git remote update
-15 error fatal: unable to access 'https://github.com/akropolisio/web3-wallets-kit.git/': OpenSSL SSL_read: Connection was reset, errno 10054
-15 error error: could not fetch upstream
-15 error Fetching origin
-15 error Fetching upstream
-15 error     at makeError (E:\metawallet\meta-wallets-kit\node_modules\execa\lib\error.js:60:11)
-15 error     at Function.module.exports.sync (E:\metawallet\meta-wallets-kit\node_modules\execa\index.js:194:17)
-15 error     at Object.execSync (E:\metawallet\meta-wallets-kit\node_modules\@lerna\child-process\index.js:39:16)
-15 error     at updateRemote (E:\metawallet\meta-wallets-kit\node_modules\lerna\dist\cli.js:5910:22)
-15 error     at isBehindUpstream (E:\metawallet\meta-wallets-kit\node_modules\lerna\dist\cli.js:5900:7)
-15 error     at VersionCommand.initialize (E:\metawallet\meta-wallets-kit\node_modules\lerna\dist\cli.js:6235:57)
+109 error Error: Command failed with exit code 128: git push --follow-tags --no-verify --atomic origin master
+109 error remote: Permission to metabaseex/meta-wallets-kit.git denied to eggor2021.
+109 error fatal: unable to access 'https://github.com/metabaseex/meta-wallets-kit.git/': The requested URL returned error: 403
+109 error     at makeError (E:\metawallet\meta-wallets-kit\node_modules\execa\lib\error.js:60:11)
+109 error     at handlePromise (E:\metawallet\meta-wallets-kit\node_modules\execa\index.js:118:26)

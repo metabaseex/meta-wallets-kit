@@ -10,3 +10,4 @@ packages/coinbase-connector/node_modules
 packages/*/node_modules/.cache
 packages/*/node_modules
 *.log
+*.log
