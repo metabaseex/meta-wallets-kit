@@ -1,0 +1,78 @@
+{
+  "name": "meta-wallets-kit",
+  "description": "Package for connecting with Ethereum wallets for dApp",
+  "scripts": {
+    "clean": "lerna clean --yes && lerna exec -- rm -rf dist/ && rm -rf node_modules",
+    "build": "lerna run build",
+    "start": "lerna run --parallel --no-bail start -- -- --verbose --noClean",
+    "lint": "lerna run lint",
+    "test": "lerna run test",
+    "link-all": "lerna exec -- yarn link"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/metabaseex/meta-wallets-kit"
+  },
+  "keywords": [
+    "ethereum",
+    "web3",
+    "dapp",
+    "rxjs",
+    "walletconnect",
+    "metamask",
+    "bitski",
+    "fortmatic"
+  ],
+  "author": "metabaseex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/metabaseex/meta-wallets-kit/issues"
+  },
+  "homepage": "https://github.com/metabaseex/meta-wallets-kit#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.3",
+    "@commitlint/config-conventional": "^17.6.3",
+    "@types/jest": "^29.5.1",
+    "@types/node": "^20.1.2",
+    "@typescript-eslint/eslint-plugin": "^5.59.5",
+    "@typescript-eslint/parser": "^5.59.5",
+    "commitizen": "^4.3.0",
+    "conventional-changelog-cli": "^2.2.2",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^8.40.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-json": "^3.1.0",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "lerna": "^6.6.2",
+    "prettier": "^2.8.8",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.1",
+    "tsdx": "^0.14.1",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "rollup": "^3.21.6"
+  }
+}
