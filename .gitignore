@@ -5,5 +5,7 @@ lib
 coverage
 packages/*/dist
 packages/*/temp
-packages/*/node_modules
+packages/abstarct-connector/node_modules
+packages/coinbase-connector/node_modules
+packages/*/node_modules/.cache
 *.log
