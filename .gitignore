@@ -8,4 +8,5 @@ packages/*/temp
 packages/abstarct-connector/node_modules
 packages/coinbase-connector/node_modules
 packages/*/node_modules/.cache
+packages/*/node_modules
 *.log
