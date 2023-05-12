@@ -51,6 +51,7 @@ export abstract class AbstractConnector<P extends DefaultConnectionPayload>
 
   public async switchAccount(account:string) : Promise<string | null>{
     if(account == null || account=='') return null;
+    
     return null;
   }
 
