@@ -11,9 +11,11 @@ export { InpageProvider };
 
 export interface InpageConnectionPayload extends DefaultConnectionPayload {
   provider: InpageProvider;
+  isMetamask:boolean,
 }
 
 export class InpageConnector extends AbstractConnector<InpageConnectionPayload> {
+
   public async connect(): Promise<InpageConnectionPayload> {
     let provider: InpageProvider = window.ethereum || window.web3?.currentProvider;
 
@@ -27,13 +29,31 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
         'Web3 provider not found! Please install the Web3 extension (e.g. Metamask) or use the Web3 browser (e.g. TrustWallet on your mobile device).',
       );
     }
+    
+    let isMetamask = typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask;
 
-    if (provider.enable) {
-      await provider.enable();
+    if(isMetamask){
+      try {
+        const result: string[] = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
+        if(result.length>0){
+          
+        }
+      } catch (e: any) {
+        
+      }
+    }else{
+      if (provider.enable) {
+        await provider.enable();
+      }
     }
+
+    
 
     this.payload = {
       provider,
+      isMetamask
     };
 
     return this.payload;

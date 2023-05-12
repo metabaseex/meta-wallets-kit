@@ -9,6 +9,6 @@ declare global {
     web3?: {
       currentProvider?: unknown;
     };
-    ethereum?: unknown;
+    ethereum?: any;
   }
 }
