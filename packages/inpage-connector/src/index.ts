@@ -65,6 +65,18 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
     return current;
   }
 
+  public async switchOrAddChain() : Promise<number | null>{
+    
+
+    return null;
+  }
+
+  public async addTokenToWallet() : Promise<boolean | null>{
+
+
+    return null;
+  }
+
   public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
     return super.subscribeDisconnect((error?: any) => {
       const isRecoverableMetamaskDisconnection =

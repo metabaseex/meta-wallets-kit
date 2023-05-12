@@ -49,19 +49,11 @@ export abstract class AbstractConnector<P extends DefaultConnectionPayload>
     return chainId;
   }
 
-  public async switchAccount(account:string) : Promise<string | null>{
-    if(account == null || account=='') return null;
-    
-    return null;
-  }
+  public abstract switchAccount(account:string) : Promise<string | null>;
 
-  public async switchOrAddChain() : Promise<number | null>{
-    return null;
-  }
+  public abstract switchOrAddChain() : Promise<number | null>;
 
-  public async addTokenToWallet() : Promise<boolean | null>{
-    return null;
-  }
+  public abstract addTokenToWallet() : Promise<boolean | null>;
 
   public getConnectionPayload() {
     return this.payload;
