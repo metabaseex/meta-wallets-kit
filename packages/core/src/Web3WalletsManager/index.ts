@@ -88,8 +88,8 @@ export class Web3WalletsManager<W> {
       const chainId = await getChainId(connector);
       this.chainId.next(chainId);
 
-      this.accountSubscription = connector.subscribeConnectAccount(this.handleAccountChange);
-      this.chainIdSubscription = connector.subscribeChainId(this.handleChainIdChange);
+      this.accountSubscription = connector.subscribeAccountChanged(this.handleAccountChange);
+      this.chainIdSubscription = connector.subscribeChainChanged(this.handleChainIdChange);
       this.disconnectSubscription = connector.subscribeDisconnect(this.handleDisconnect);
 
       this.status.next('connected');

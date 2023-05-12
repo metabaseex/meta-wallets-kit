@@ -55,6 +55,16 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
     return this.payload;
   }
 
+  public async switchAccount(account:string) : Promise<string | null>{
+    let current = null;
+    if(account == null || account=='') return null;
+    // if(!this.payload?){
+    //   return null;
+    // }
+
+    return current;
+  }
+
   public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
     return super.subscribeDisconnect((error?: any) => {
       const isRecoverableMetamaskDisconnection =

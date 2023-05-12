@@ -49,11 +49,24 @@ export abstract class AbstractConnector<P extends DefaultConnectionPayload>
     return chainId;
   }
 
+  public async switchAccount(account:string) : Promise<string | null>{
+    if(account == null || account=='') return null;
+    return null;
+  }
+
+  public async switchOrAddChain() : Promise<number | null>{
+    return null;
+  }
+
+  public async addTokenToWallet() : Promise<boolean | null>{
+    return null;
+  }
+
   public getConnectionPayload() {
     return this.payload;
   }
 
-  public subscribeConnectAccount(callback: ConnectCallback): SubscribedObject {
+  public subscribeAccountChanged(callback: ConnectCallback): SubscribedObject {
     const convertedCallback = (accounts: string[]) => callback(accounts[0]);
 
     this.payload?.provider.on && this.payload.provider.on('accountsChanged', convertedCallback);
@@ -66,7 +79,7 @@ export abstract class AbstractConnector<P extends DefaultConnectionPayload>
     };
   }
 
-  public subscribeChainId(callback: ChainIdCallback): SubscribedObject {
+  public subscribeChainChanged(callback: ChainIdCallback): SubscribedObject {
     const convertedCallback = (chainId: number | string) => {
       const convertedChainId = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
 

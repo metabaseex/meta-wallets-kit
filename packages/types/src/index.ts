@@ -15,9 +15,15 @@ export interface Connector<P extends DefaultConnectionPayload = DefaultConnectio
   disconnect(): MaybePromise<void>;
   getAccount(): Promise<string | null>;
   getChainId(): Promise<number | null>;
+  //extend method,added by david mei at 2023-05-12
+  switchAccount(account:string): Promise<string | null>;
+  switchOrAddChain(): Promise<number | null>;
+  addTokenToWallet(): Promise<boolean | null>;
+  //get payload
   getConnectionPayload(): P | null;
-  subscribeConnectAccount(callback: ConnectCallback): SubscribedObject;
-  subscribeChainId(callback: ChainIdCallback): SubscribedObject;
+  //event
+  subscribeAccountChanged(callback: ConnectCallback): SubscribedObject;
+  subscribeChainChanged(callback: ChainIdCallback): SubscribedObject;
   subscribeDisconnect(callback: DisconnectCallback): SubscribedObject;
 }
 
