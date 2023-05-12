@@ -33,16 +33,12 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
     let isMetamask = typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask;
 
     if(isMetamask){
-      try {
         const result: string[] = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
         if(result.length>0){
           
         }
-      } catch (e: any) {
-        
-      }
     }else{
       if (provider.enable) {
         await provider.enable();
