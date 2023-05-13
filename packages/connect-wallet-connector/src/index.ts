@@ -39,4 +39,14 @@ export class ConnectWalletConnector extends AbstractConnector<ConnectWalletConne
     }
     super.disconnect();
   }
+
+  public async switchAccount(account: string): Promise<string | null> {
+    throw new Error('Method not implemented.');
+  }
+  public async switchOrAddChain(): Promise<number | null> {
+    throw new Error('Method not implemented.');
+  }
+  public async addTokenToWallet(): Promise<boolean | null> {
+    throw new Error('Method not implemented.');
+  }
 }

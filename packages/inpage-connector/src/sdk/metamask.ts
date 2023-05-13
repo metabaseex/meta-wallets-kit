@@ -22,7 +22,7 @@ export class MetaMaskWalletSdk {
      * Returns account address array if wallet is connected otherwise opens MetaMask popup.
      * On error, returns a single string with the error message
      */
-    async connect() {
+    public async connect() {
         if (this.isMetaMask()) {
             try {
                 const result: string[] = await window.ethereum.request({
@@ -41,7 +41,7 @@ export class MetaMaskWalletSdk {
      * Get all connected accounts addresses. Returns an empty array if none connected
      * On error, returns a single string with the error message
      */
-    async getAccounts() {
+    public async getAccounts() {
         if (this.isMetaMask()) {
         try {
             const result: string[] = await window.ethereum.request({
@@ -63,7 +63,7 @@ export class MetaMaskWalletSdk {
      * The popup opens even if the user has already connected some accounts.
      * On error, returns a single string with the error message
      */
-    async switchAccounts(account:string) {
+    public async switchAccounts(account:string) {
         if (this.isMetaMask()) {
             try {
                 const result: string[] = await window.ethereum.request({
@@ -92,7 +92,7 @@ export class MetaMaskWalletSdk {
      * @param decimals (Optional) 18 by default
      * @param type (Optional) ERC20 by default
      */
-    async addTokenToWallet(symbol: string,address: string,imageURL: string, decimals = 18, type = "ERC20"){
+    public async addTokenToWallet(symbol: string,address: string,imageURL: string, decimals = 18, type = "ERC20"){
         await window.ethereum.request({
         method: "wallet_watchAsset",
         params: {
@@ -113,7 +113,7 @@ export class MetaMaskWalletSdk {
      * @param chainId ChainID as an Integer
      * @param chainConfig (Optional) Chain Config Interface used for adding new chain
      */
-    async switchOrAddChain(chainId: number,chainConfig?: ChainConfig){
+    public async switchOrAddChain(chainId: number,chainConfig?: ChainConfig){
         const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
         try {
             await window.ethereum.request({

@@ -21,6 +21,8 @@ export interface CoinbaseConnectorConfig extends CoinbaseWalletSDKOptions {
 }
 
 export class CoinbaseConnector extends AbstractConnector<CoinbaseConnectionPayload> {
+  
+  
   constructor(private config: CoinbaseConnectorConfig) {
     super();
   }
@@ -45,6 +47,18 @@ export class CoinbaseConnector extends AbstractConnector<CoinbaseConnectionPaylo
     }
     super.disconnect();
   }
+
+  public async switchAccount(account: string): Promise<string | null> {
+    throw new Error('Method not implemented.');
+  }
+  public async switchOrAddChain(): Promise<number | null> {
+    throw new Error('Method not implemented.');
+  }
+  public async addTokenToWallet(): Promise<boolean | null> {
+    throw new Error('Method not implemented.');
+  }
+
+  /** event  ****/
 
   public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
     return super.subscribeDisconnect((error?: any) => {
