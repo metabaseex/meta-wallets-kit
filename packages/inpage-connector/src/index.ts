@@ -5,6 +5,8 @@ import {
   SubscribedObject,
 } from '@meta-wallets-kit/types';
 
+import { MetaMaskWalletSdk } from './sdk/metamask';
+
 import { InpageProvider } from './@types/extend-window';
 
 export { InpageProvider };
@@ -15,6 +17,7 @@ export interface InpageConnectionPayload extends DefaultConnectionPayload {
 }
 
 export class InpageConnector extends AbstractConnector<InpageConnectionPayload> {
+
 
   public async connect(): Promise<InpageConnectionPayload> {
     let provider: InpageProvider = window.ethereum || window.web3?.currentProvider;
@@ -58,15 +61,15 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
   public async switchAccount(account:string) : Promise<string | null>{
     let current = null;
     if(account == null || account=='') return null;
-    // if(!this.payload?){
-    //   return null;
-    // }
+    var sdk  = new MetaMaskWalletSdk();
 
+    await sdk.switchAccounts(account);
+    
     return current;
   }
 
   public async switchOrAddChain() : Promise<number | null>{
-    
+
 
     return null;
   }

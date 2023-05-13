@@ -8,6 +8,8 @@ import {
 } from '@meta-wallets-kit/types';
 import { getAccount, getChainId, SendingInterface } from '@meta-wallets-kit/utils';
 
+
+
 export abstract class AbstractConnector<P extends DefaultConnectionPayload>
   implements Connector<P> {
   protected payload: P | null = null;
