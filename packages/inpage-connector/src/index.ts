@@ -1,23 +1,29 @@
-import { BaseConnector } from '@meta-wallets-kit/core';
+import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
 import {
   DefaultConnectionPayload,
   DisconnectCallback,
   SubscribedObject,
 } from '@meta-wallets-kit/core';
 
-import { MetaMaskWalletSdk } from './sdk/metamask';
-
 import { InpageProvider } from './@types/extend-window';
 
+import { MetaMaskWalletSdk } from './sdk/metamask';
+
+/** Export Targets */
 export { InpageProvider };
 
 export interface InpageConnectionPayload extends DefaultConnectionPayload {
   provider: InpageProvider;
-  isMetamask:boolean,
+  isMetamask:boolean;
 }
 
-export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
+export class InpageConnector extends BaseConnector<InpageConnectionPayload> { 
+  
+  metaMask:MetaMaskWalletSdk = new MetaMaskWalletSdk();
 
+  constructor(){
+    super();
+  }
 
   public async connect(): Promise<InpageConnectionPayload> {
     let provider: InpageProvider = window.ethereum || window.web3?.currentProvider;
@@ -33,58 +39,53 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
       );
     }
     
-    let isMetamask = typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask;
+    let isMetamask = this.metaMask.isMetaMask();
 
     if(isMetamask){
-        const result: string[] = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        if(result.length>0){
-          
-        }
+        await this.metaMask.connect();
     }else{
       if (provider.enable) {
         await provider.enable();
       }
     }
 
-    
-
-    this.payload = {
-      provider,
-      isMetamask
-    };
+    this.payload = { provider, isMetamask };
 
     return this.payload;
   }
 
   public async switchAccount(account:string) : Promise<string | null>{
-    let current = null;
     if(account == null || account=='') return null;
-    var sdk  = new MetaMaskWalletSdk();
 
-    await sdk.switchAccount(account);
+    await this.metaMask.switchAccount(account);
     
-    return current;
+    return account;
   }
 
-  public async switchOrAddChain() : Promise<number | null>{
+  public async switchOrAddChain(networkId:string) : Promise<number | null>{
+    let chainList:ChainWrapper = new ChainWrapper();
+    let chainConfig = chainList.getChainConfig(networkId);
+    if(chainConfig == undefined){
+      return null;
+    }
 
-
-    return null;
+    return await this.metaMask.switchOrAddChain(chainConfig);
   }
 
-  public async addTokenToWallet() : Promise<boolean | null>{
+  public async addTokenToWallet(token:TokenConfig) : Promise<boolean | null>{
+    if(token == null ) return null;
 
-
-    return null;
+    return await this.metaMask.addTokenToWallet(
+      token.symbol,token.address,token.imageURL,token.decimals,token.type
+    );
   }
 
   public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
     return super.subscribeDisconnect((error?: any) => {
-      const isRecoverableMetamaskDisconnection =
-        this.payload?.provider?.isMetaMask && error?.code === 1013;
+      const isRecoverableMetamaskDisconnection = (this.payload?.provider?.isMetaMask && error?.code === 1013);
       !isRecoverableMetamaskDisconnection && callback(error);
     });
   }
+
+
 }

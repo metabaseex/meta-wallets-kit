@@ -5,6 +5,10 @@ import { ChainConfig } from '@meta-wallets-kit/core';
 
 export class MetaMaskWalletSdk implements IBaseConnectorSdk{
 
+    constructor(){
+
+    }
+
     public isMetaMask(): boolean {
         return typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask;
     }
@@ -26,31 +30,6 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
             return "Error: MetaMask not detected";
         }
     }
-
-    public async disConnect(){
-        
-    }
-
-    /**
-     * Get all connected accounts addresses. Returns an empty array if none connected
-     * On error, returns a single string with the error message
-     */
-    public async getAccounts() {
-        if (this.isMetaMask()) {
-        try {
-            const result: string[] = await window.ethereum.request({
-            method: "eth_accounts",
-            });
-            return result;
-        } catch (e) {
-            return "Error: Unable to execute request: "+ e?.message;
-        }
-        } else {
-        return "Error: MetaMask not detected";
-        }
-    }
-
-
     /**
      * Opens a MetaMask popup to connect/disconnect from a list of user's accounts.
      * Returns an array.
@@ -77,7 +56,6 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
         }
     }
 
-
     /**
      * Add a token to MetaMask
      * @param symbol Symbol of the token, upto 5 characters
@@ -92,10 +70,10 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
             params: {
                 type,
                 options: {
-                address, // The address that the token is at.
-                symbol, // A ticker symbol or shorthand, up to 5 chars.
-                decimals, // The number of decimals in the token
-                image: imageURL, // A string url of the token logo
+                    address, // The address that the token is at.
+                    symbol, // A ticker symbol or shorthand, up to 5 chars.
+                    decimals, // The number of decimals in the token
+                    image: imageURL, // A string url of the token logo
                 },
             },
         });
@@ -104,10 +82,11 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
 
     /**
      * Switch to a chain or add the chain if user does not have it
-     * @param chainId ChainID as an Integer
      * @param chainConfig (Optional) Chain Config Interface used for adding new chain
      */
-    public async switchOrAddChain(chainId: number,chainConfig?: ChainConfig) : Promise<number | null>{
+    public async switchOrAddChain(chainConfig?: ChainConfig) : Promise<number | null>{
+        if(chainConfig == undefined) return null;
+        let chainId = chainConfig?.chainId;
         const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
         try {
            let isConfig = chainConfig==null;

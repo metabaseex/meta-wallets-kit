@@ -20,12 +20,12 @@ export type ChainConfig = {
       default: RpcUrls
       public: RpcUrls
       [key: string]: RpcUrls
-    }
+    },
     /** Collection of block explorers */
     blockExplorerUrls?: {
       default: BlockExplorer
       [key: string]: BlockExplorer
-    }
+    },
     /** Collection of contracts */
     contracts?: {
       ensRegistry?: Contract

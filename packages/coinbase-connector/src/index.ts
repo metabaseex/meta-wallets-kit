@@ -1,7 +1,7 @@
 /* eslint-disable import/no-duplicates */
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import type CoinbaseWalletSDKClass from '@coinbase/wallet-sdk';
-import { BaseConnector } from '@meta-wallets-kit/core';
+import { BaseConnector,TokenConfig } from '@meta-wallets-kit/core';
 import {
   DefaultConnectionPayload,
   DisconnectCallback,
@@ -21,7 +21,6 @@ export interface CoinbaseConnectorConfig extends CoinbaseWalletSDKOptions {
 }
 
 export class CoinbaseConnector extends BaseConnector<CoinbaseConnectionPayload> {
-  
   
   constructor(private config: CoinbaseConnectorConfig) {
     super();
@@ -52,11 +51,13 @@ export class CoinbaseConnector extends BaseConnector<CoinbaseConnectionPayload> 
     if(account == null) return null;
     throw new Error('Method not implemented.');
   }
-  public async switchOrAddChain(): Promise<number | null> {
-    throw new Error('Method not implemented.');
+  public async switchOrAddChain(networkId:string): Promise<number | null> {
+    if(networkId==null) return null;
+    return null;
   }
-  public async addTokenToWallet(): Promise<boolean | null> {
-    throw new Error('Method not implemented.');
+  public async addTokenToWallet(token:TokenConfig): Promise<boolean | null> {
+    if(token == null ) return null;
+    return null;
   }
 
   /** event  ****/

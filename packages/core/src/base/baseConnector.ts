@@ -6,6 +6,7 @@ import {
     DisconnectCallback,
     SubscribedObject,
 } from './IConnector';
+import type { TokenConfig } from '../model';
 import { getAccount, getChainId, SendingInterface } from '../utils';
 
   
@@ -17,18 +18,19 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
 
     public abstract connect(): Promise<P>;
 
+    /** common fuction start */
     public async disconnect() {
         this.payload = null;
     }
 
     public async getAccount(): Promise<string | null> {
         if (!this.payload) {
-        return null;
+            return null;
         }
 
         const { account, sendingInterface } = await getAccount(
-        this.payload.provider,
-        this.sendingInterface,
+            this.payload.provider,
+            this.sendingInterface,
         );
 
         this.sendingInterface = sendingInterface;
@@ -42,8 +44,8 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
         }
 
         const { chainId, sendingInterface } = await getChainId(
-        this.payload.provider,
-        this.sendingInterface,
+            this.payload.provider,
+            this.sendingInterface,
         );
 
         this.sendingInterface = sendingInterface;
@@ -51,26 +53,30 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
         return chainId;
     }
 
-    public abstract switchAccount(account:string) : Promise<string | null>;
-
-    public abstract switchOrAddChain() : Promise<number | null>;
-
-    public abstract addTokenToWallet() : Promise<boolean | null>;
-
     public getConnectionPayload() {
         return this.payload;
     }
 
+    /** common fuction end */
+
+    public abstract switchAccount(account:string) : Promise<string | null>;
+
+    public abstract switchOrAddChain(networkId:string) : Promise<number | null>;
+
+    public abstract addTokenToWallet(token:TokenConfig) : Promise<boolean | null>;
+
+
+    /******** event function */
     public subscribeAccountChanged(callback: ConnectCallback): SubscribedObject {
         const convertedCallback = (accounts: string[]) => callback(accounts[0]);
 
         this.payload?.provider.on && this.payload.provider.on('accountsChanged', convertedCallback);
 
         return {
-        unsubscribe: () => {
-            this.payload?.provider.removeListener &&
-            this.payload.provider.removeListener('accountsChanged', convertedCallback);
-        },
+            unsubscribe: () => {
+                this.payload?.provider.removeListener &&
+                this.payload.provider.removeListener('accountsChanged', convertedCallback);
+            },
         };
     }
 
@@ -99,10 +105,10 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
         this.payload?.provider.on && this.payload.provider.on('disconnect', callback);
 
         return {
-        unsubscribe: () => {
-            this.payload?.provider.removeListener &&
-            this.payload.provider.removeListener('disconnect', callback);
-        },
+            unsubscribe: () => {
+                this.payload?.provider.removeListener &&
+                this.payload.provider.removeListener('disconnect', callback);
+            },
         };
     }
 }

@@ -1,5 +1,6 @@
 //base common types
 import type { Provider } from '.';
+import type { TokenConfig } from '../model';
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -9,15 +10,15 @@ export interface DefaultConnectionPayload {
 
 export interface IConnector<P extends DefaultConnectionPayload = DefaultConnectionPayload> {
   connect(): MaybePromise<P>;
+  //common function
   disconnect(): MaybePromise<void>;
   getAccount(): Promise<string | null>;
   getChainId(): Promise<number | null>;
-  //extend method,added by david mei at 2023-05-12
-  switchAccount(account:string): Promise<string | null>;
-  switchOrAddChain(): Promise<number | null>;
-  addTokenToWallet(): Promise<boolean | null>;
-  //get payload
   getConnectionPayload(): P | null;
+  //extend method,added by david mei at 2023-05-12
+  switchAccount?(account: string): Promise<string | null>;
+  switchOrAddChain?(networkId: string): Promise<number | null>;
+  addTokenToWallet?(token: TokenConfig): Promise<boolean | null>;
   //event
   subscribeAccountChanged(callback: ConnectCallback): SubscribedObject;
   subscribeChainChanged(callback: ChainIdCallback): SubscribedObject;
