@@ -1,14 +1,21 @@
 import './@types';
+//base common types
+//import './base/baseTypes';
+
+export type { ChainConfig } from './base/baseTypes';
 
 import type { Provider } from '@meta-wallets-kit/for-third-library-definitions';
 
 export { Provider };
 
+
 type MaybePromise<T> = T | Promise<T>;
+
 
 export interface DefaultConnectionPayload {
   provider: Provider;
 }
+
 
 export interface Connector<P extends DefaultConnectionPayload = DefaultConnectionPayload> {
   connect(): MaybePromise<P>;

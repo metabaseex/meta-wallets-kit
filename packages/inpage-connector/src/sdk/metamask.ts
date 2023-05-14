@@ -1,32 +1,22 @@
-/**
- * based on metamask api 1.0
- **/
-interface ChainConfig {
-    chainName: string;
-    rpcUrls: string[];
-    nativeCurrency: {
-        name: string;
-        symbol: string;
-        decimals: number;
-    };
-    blockExplorerUrls: string[];
-}
 
+import { IBaseConnectorSdk } from '@meta-wallets-kit/core';
 
-export class MetaMaskWalletSdk {
+import { ChainConfig } from '@meta-wallets-kit/types';
 
-    isMetaMask(){
+export class MetaMaskWalletSdk implements IBaseConnectorSdk{
+
+    public isMetaMask(): boolean {
         return typeof window.ethereum !== "undefined" && window.ethereum.isMetaMask;
     }
     /**
      * Returns account address array if wallet is connected otherwise opens MetaMask popup.
      * On error, returns a single string with the error message
      */
-    public async connect() {
+     public async connect()  {
         if (this.isMetaMask()) {
             try {
                 const result: string[] = await window.ethereum.request({
-                method: "eth_requestAccounts",
+                    method: "eth_requestAccounts",
                 });
                 return result;
             } catch (e) {
@@ -92,18 +82,18 @@ export class MetaMaskWalletSdk {
      * @param decimals (Optional) 18 by default
      * @param type (Optional) ERC20 by default
      */
-    public async addTokenToWallet(symbol: string,address: string,imageURL: string, decimals = 18, type = "ERC20"){
-        await window.ethereum.request({
-        method: "wallet_watchAsset",
-        params: {
-            type,
-            options: {
-            address, // The address that the token is at.
-            symbol, // A ticker symbol or shorthand, up to 5 chars.
-            decimals, // The number of decimals in the token
-            image: imageURL, // A string url of the token logo
+    public async addTokenToWallet(symbol: string,address: string,imageURL: string, decimals = 18, type = "ERC20"):Promise<boolean | null>{
+        return await window.ethereum.request({
+            method: "wallet_watchAsset",
+            params: {
+                type,
+                options: {
+                address, // The address that the token is at.
+                symbol, // A ticker symbol or shorthand, up to 5 chars.
+                decimals, // The number of decimals in the token
+                image: imageURL, // A string url of the token logo
+                },
             },
-        },
         });
     };
 
@@ -113,10 +103,10 @@ export class MetaMaskWalletSdk {
      * @param chainId ChainID as an Integer
      * @param chainConfig (Optional) Chain Config Interface used for adding new chain
      */
-    public async switchOrAddChain(chainId: number,chainConfig?: ChainConfig){
+    public async switchOrAddChain(chainId: number,chainConfig?: ChainConfig) : Promise<number | null>{
         const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
         try {
-            await window.ethereum.request({
+           return  await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
                 params: [{ chainId: chainIdHex }],
             });
@@ -142,6 +132,8 @@ export class MetaMaskWalletSdk {
                 throw new Error("Couldn't switch networks. Error: " + switchError);
             }
         }
+
+        return null;
     };
 
 // Event handlers

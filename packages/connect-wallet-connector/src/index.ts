@@ -41,6 +41,7 @@ export class ConnectWalletConnector extends AbstractConnector<ConnectWalletConne
   }
 
   public async switchAccount(account: string): Promise<string | null> {
+    if(account == null) return null;
     throw new Error('Method not implemented.');
   }
   public async switchOrAddChain(): Promise<number | null> {

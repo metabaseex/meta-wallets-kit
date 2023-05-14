@@ -7,6 +7,10 @@ import { ConnectResult, ConnectionStatus } from './types';
 
 export * from './types';
 
+export * from './chains';
+
+export { IBaseConnectorSdk}  from './interfaces/IBaseConnectorSdk';
+
 const WebsocketProvider = (Web3ProvidersWs as unknown) as typeof Web3ProvidersWs.WebsocketProvider;
 const HttpProvider = (Web3ProvidersHttp as unknown) as typeof Web3ProvidersHttp.HttpProvider;
 
