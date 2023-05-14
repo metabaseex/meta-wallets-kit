@@ -1,6 +1,6 @@
 {
   "name": "@meta-wallets-kit/coinbase-connector",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Package for connecting with Ethereum wallets for dApp",
   "keywords": [
     "ethereum",
@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@coinbase/wallet-sdk": "^3.6.6",
-    "@meta-wallets-kit/core": "^0.1.9"
+    "@meta-wallets-kit/core": "^0.1.10"
   },
   "gitHead": "4af2cfeb5bf8aa10a5c7943faafb82f7d73822ff"
 }
