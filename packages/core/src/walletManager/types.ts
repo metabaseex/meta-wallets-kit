@@ -1,4 +1,4 @@
-import { Provider } from '@meta-wallets-kit/types';
+import { Provider } from '@meta-wallets-kit/provider';
 
 export type ConnectionStatus = 'disconnected' | 'pending' | 'connected';
 

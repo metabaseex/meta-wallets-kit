@@ -1,5 +1,5 @@
 
-import { ChainConfig } from '@meta-wallets-kit/types';
+import { ChainConfig } from '../model';
 
 export interface IBaseConnectorSdk{
     isMetaMask();

@@ -1,9 +1,9 @@
-import { AbstractConnector } from '@meta-wallets-kit/abstract-connector';
+import { BaseConnector } from '@meta-wallets-kit/core';
 import {
   DefaultConnectionPayload,
   DisconnectCallback,
   SubscribedObject,
-} from '@meta-wallets-kit/types';
+} from '@meta-wallets-kit/core';
 
 import { MetaMaskWalletSdk } from './sdk/metamask';
 
@@ -16,7 +16,7 @@ export interface InpageConnectionPayload extends DefaultConnectionPayload {
   isMetamask:boolean,
 }
 
-export class InpageConnector extends AbstractConnector<InpageConnectionPayload> {
+export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
 
 
   public async connect(): Promise<InpageConnectionPayload> {
@@ -63,7 +63,7 @@ export class InpageConnector extends AbstractConnector<InpageConnectionPayload> 
     if(account == null || account=='') return null;
     var sdk  = new MetaMaskWalletSdk();
 
-    await sdk.switchAccounts(account);
+    await sdk.switchAccount(account);
     
     return current;
   }

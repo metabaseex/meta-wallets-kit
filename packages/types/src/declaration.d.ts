@@ -1,1 +1,0 @@
-declare module '@meta-wallets-kit/types'

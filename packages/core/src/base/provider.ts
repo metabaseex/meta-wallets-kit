@@ -1,4 +1,4 @@
-declare module '@meta-wallets-kit/for-third-library-definitions' {
+declare module '@meta-wallets-kit/provider' {
   export type Provider = any;
 
   export interface JsonRpcPayload {

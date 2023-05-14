@@ -1,4 +1,4 @@
-import {  ChainConfig } from '@meta-wallets-kit/types';
+import {  ChainConfig } from '../model';
 
 export const bscTestnet : ChainConfig = {
     networkId: 'bsc_97',  

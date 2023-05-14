@@ -1,12 +1,12 @@
 /* eslint-disable import/no-duplicates */
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import type CoinbaseWalletSDKClass from '@coinbase/wallet-sdk';
-import { AbstractConnector } from '@meta-wallets-kit/abstract-connector';
+import { BaseConnector } from '@meta-wallets-kit/core';
 import {
   DefaultConnectionPayload,
   DisconnectCallback,
   SubscribedObject,
-} from '@meta-wallets-kit/types';
+} from '@meta-wallets-kit/core';
 
 type CoinbaseWalletSDKOptions = ConstructorParameters<typeof CoinbaseWalletSDKClass>[0];
 
@@ -20,7 +20,7 @@ export interface CoinbaseConnectorConfig extends CoinbaseWalletSDKOptions {
   chainId?: number;
 }
 
-export class CoinbaseConnector extends AbstractConnector<CoinbaseConnectionPayload> {
+export class CoinbaseConnector extends BaseConnector<CoinbaseConnectionPayload> {
   
   
   constructor(private config: CoinbaseConnectorConfig) {

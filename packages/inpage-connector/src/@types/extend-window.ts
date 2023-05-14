@@ -1,4 +1,4 @@
-import { Provider } from '@meta-wallets-kit/types';
+import { Provider } from '@meta-wallets-kit/core';
 
 export type InpageProvider = Provider & {
   enable?(): Promise<void>;

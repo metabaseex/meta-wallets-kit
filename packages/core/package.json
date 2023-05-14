@@ -8,9 +8,7 @@
     "dapp",
     "rxjs",
     "walletconnect",
-    "metamask",
-    "bitski",
-    "fortmatic"
+    "metamask"
   ],
   "author": "metabaseex",
   "homepage": "https://github.com/metabaseex/meta-wallets-kit/tree/master/packages/core#readme",
@@ -40,6 +38,7 @@
   },
   "dependencies": {
     "@meta-wallets-kit/types": "^0.1.8",
+    "@meta-wallets-kit/utils": "^0.1.8",
     "rxjs": "^7.8.1",
     "ts-toolbelt": "^9.6.0",
     "web3-providers-http": "^1.10.0",

@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
-import { Connector, Provider, SubscribedObject } from '@meta-wallets-kit/types';
+import { IConnector, Provider, SubscribedObject } from '../base';
 
 import { ConnectResult, ConnectionStatus } from './types';
 
@@ -48,7 +48,7 @@ export class Web3WalletsManager<W> {
   public status = new BehaviorSubject<ConnectionStatus>('disconnected');
 
   private options: Options<W>;
-  private activeConnector: Connector | null = null;
+  private activeConnector: IConnector | null = null;
   private accountSubscription: SubscribedObject | null = null;
   private chainIdSubscription: SubscribedObject | null = null;
   private disconnectSubscription: SubscribedObject | null = null;
@@ -72,7 +72,7 @@ export class Web3WalletsManager<W> {
     this.handleDisconnect = this.handleDisconnect.bind(this);
   }
 
-  public async connect(connector: Connector): Promise<ConnectResult> {
+  public async connect(connector: IConnector): Promise<ConnectResult> {
     await this.disconnect();
 
     this.activeConnector = connector;
@@ -193,7 +193,7 @@ export function assertNever(value: never): never {
   throw new Error(`Unexpected value: ${value}`);
 }
 
-async function getAccount(connector: Connector): Promise<string> {
+async function getAccount(connector: IConnector): Promise<string> {
   const account = await connector.getAccount();
 
   if (!account) {
@@ -203,7 +203,7 @@ async function getAccount(connector: Connector): Promise<string> {
   return account;
 }
 
-async function getChainId(connector: Connector): Promise<number> {
+async function getChainId(connector: IConnector): Promise<number> {
   const chainId = await connector.getChainId();
 
   if (!chainId) {

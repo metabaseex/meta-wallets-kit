@@ -1,6 +1,6 @@
 /* eslint-disable import/no-duplicates */
-import { AbstractConnector } from '@meta-wallets-kit/abstract-connector';
-import { DefaultConnectionPayload } from '@meta-wallets-kit/types';
+import { BaseConnector } from '@meta-wallets-kit/core';
+import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
 import type WalletConnectProvider from '@walletconnect/web3-provider';
 import type { IWalletConnectProviderOptions } from '@walletconnect/types';
 
@@ -10,7 +10,7 @@ export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload
   provider: WalletConnectProvider;
 }
 
-export class ConnectWalletConnector extends AbstractConnector<ConnectWalletConnectionPayload> {
+export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectionPayload> {
   constructor(private config: ConnectWalletConnectorConfig) {
     super();
   }
