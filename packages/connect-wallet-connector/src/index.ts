@@ -1,13 +1,24 @@
 /* eslint-disable import/no-duplicates */
 import { BaseConnector } from '@meta-wallets-kit/core';
 import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
-import type WalletConnectProvider from '@walletconnect/web3-provider';
-import type { IWalletConnectProviderOptions } from '@walletconnect/types';
+import  EthereumProvider  from '@walletconnect/ethereum-provider';
+//import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider';
 
-export type ConnectWalletConnectorConfig = IWalletConnectProviderOptions;
+export interface EthereumProviderOptions {
+  projectId: string;
+  chains: number[];
+  optionalChains?: number[];
+  methods?: string[];
+  optionalMethods?: string[];
+  events?: string[];
+  optionalEvents?: string[];
+  showQrModal: boolean;
+}
+
+export type ConnectWalletConnectorConfig = EthereumProviderOptions;
 
 export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload {
-  provider: WalletConnectProvider;
+  provider: EthereumProvider;
 }
 
 export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectionPayload> {
@@ -16,10 +27,16 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public async connect(): Promise<ConnectWalletConnectionPayload> {
-    const WalletConnectLibrary = await import('@walletconnect/web3-provider');
+    const WalletConnectLibrary = await import('@walletconnect/ethereum-provider');
     const Provider = WalletConnectLibrary.default;
-    const provider = new Provider(this.config);
-
+    const provider = await Provider.init(this.config);
+    // Web3Modal is disabled by default, enable it during init() to display a QR code modal
+    //await provider.connect({
+    //   chains, // OPTIONAL chain ids
+    //   rpcMap, // OPTIONAL rpc urls
+    //   pairingTopic // OPTIONAL pairing topic
+    // })
+// or
     await provider.enable();
 
     this.payload = {
@@ -31,11 +48,11 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
 
   public async disconnect() {
     if (this.payload) {
-      const walletConnector = await this.payload.provider.getWalletConnector({
+      /* const walletConnector = await this.payload.provider.getWalletConnector({
         disableSessionCreation: true,
       });
       await walletConnector.killSession();
-      await this.payload.provider.stop();
+      await this.payload.provider.stop(); */
     }
     super.disconnect();
   }
