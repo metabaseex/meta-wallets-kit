@@ -1,6 +1,6 @@
 {
   "name": "@meta-wallets-kit/connect-wallet-connector",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Package for connecting with Ethereum wallets for dApp",
   "keywords": [
     "ethereum",
@@ -36,7 +36,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@meta-wallets-kit/core": "^0.1.11",
+    "@meta-wallets-kit/core": "^0.1.12",
     "@walletconnect/web3-provider": "^1.8.0"
   },
   "gitHead": "1f37d77125561af4461b1125b6f5fc3fc4e09a8f"
