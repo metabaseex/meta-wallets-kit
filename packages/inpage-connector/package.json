@@ -1,6 +1,6 @@
 {
   "name": "@meta-wallets-kit/inpage-connector",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "Package for connecting with Ethereum wallets for dApp",
   "keywords": [
     "ethereum",
@@ -35,7 +35,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@meta-wallets-kit/core": "^0.1.13"
+    "@meta-wallets-kit/core": "^0.1.14"
   },
   "gitHead": "4089c2b28162ae5f783f34be3f0abcb2cab9643d"
 }
