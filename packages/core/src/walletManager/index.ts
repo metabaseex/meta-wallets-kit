@@ -98,7 +98,7 @@ export class Web3WalletsManager<W> {
 
       const chainId = await getChainId(connector);
       this.chainId.next(chainId);
-
+      //set event callback
       this.accountSubscription = connector.subscribeAccountChanged(this.handleAccountChange);
       this.chainIdSubscription = connector.subscribeChainChanged(this.handleChainIdChange);
       this.disconnectSubscription = connector.subscribeDisconnect(this.handleDisconnect);
@@ -121,6 +121,15 @@ export class Web3WalletsManager<W> {
     } finally {
       this.resetState();
     }
+  }
+
+  public getChainConfig(networkId: string) : ChainConfig | null{
+    let chainList:ChainWrapper = new ChainWrapper();
+    let chainConfig = chainList.getChainConfig(networkId);
+    if(chainConfig == undefined){
+      return null;
+    }
+    return chainConfig;
   }
 
   private resetState() {
@@ -154,6 +163,7 @@ export class Web3WalletsManager<W> {
       let httpUrl:string ='';
       if(https != undefined && https.length>0){
         httpUrl = https[0];
+        console.log('httpUrl:'+httpUrl);
       }
       return new HttpProvider(httpUrl, options);
     }
@@ -192,7 +202,7 @@ export class Web3WalletsManager<W> {
 
     return assertNever(this.options.publicConfig);
   }
-
+  
   private handleAccountChange(account: string) {
     this.account.next(account);
   }
@@ -206,14 +216,7 @@ export class Web3WalletsManager<W> {
   }
 
   /** private method */
-  private getChainConfig(networkId: string) : ChainConfig | null{
-    let chainList:ChainWrapper = new ChainWrapper();
-    let chainConfig = chainList.getChainConfig(networkId);
-    if(chainConfig == undefined){
-      return null;
-    }
-    return chainConfig;
-  }
+  
 }
 
 export function assertNever(value: never): never {
