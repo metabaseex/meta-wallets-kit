@@ -7,9 +7,8 @@ import { ConnectResult, ConnectionStatus } from './types';
 
 export * from './types';
 
-export * from '../chains';
-
-export { IBaseConnectorSdk}  from '../interfaces/IBaseConnectorSdk';
+import { ChainWrapper } from '../chains';
+import { ChainConfig } from '../model';
 
 const WebsocketProvider = (Web3ProvidersWs as unknown) as typeof Web3ProvidersWs.WebsocketProvider;
 const HttpProvider = (Web3ProvidersHttp as unknown) as typeof Web3ProvidersHttp.HttpProvider;
@@ -20,11 +19,16 @@ type HttpProviderOptions = ConstructorParameters<typeof HttpProvider>[1];
 type InfuraNetwork = 'rinkeby' | 'kovan' | 'mainnet' | 'ropsten' | 'goerli';
 
 interface Options<W> {
-  defaultProvider: OptionsOfDefaultProvider;
-  makeWeb3(provider: Provider): W;
+  publicConfig: ConfigOfPublicProvider;
+  makeWeb3Client(provider: Provider): W;
 }
 
-type OptionsOfDefaultProvider =
+type ConfigOfPublicProvider =
+  |
+    {
+      networkId:string;
+      options?: HttpProviderOptions;
+    }
   | {
       httpRpcUrl: string;
       options?: HttpProviderOptions;
@@ -41,14 +45,17 @@ type OptionsOfDefaultProvider =
     };
 
 export class Web3WalletsManager<W> {
-  public web3: W;
-  public txWeb3 = new BehaviorSubject<W | null>(null);
+
+  public publicClient: W;
+  public privateClient = new BehaviorSubject<W | null>(null);
+  //properties
   public account = new BehaviorSubject<string | null>(null);
   public chainId = new BehaviorSubject<number | null>(null);
   public status = new BehaviorSubject<ConnectionStatus>('disconnected');
 
   private options: Options<W>;
   private activeConnector: IConnector | null = null;
+  //event
   private accountSubscription: SubscribedObject | null = null;
   private chainIdSubscription: SubscribedObject | null = null;
   private disconnectSubscription: SubscribedObject | null = null;
@@ -56,13 +63,13 @@ export class Web3WalletsManager<W> {
   constructor(options: Options<W>) {
     this.options = {
       ...options,
-      defaultProvider: {
+      publicConfig: {
         network: 'mainnet',
-        ...options.defaultProvider,
+        ...options.publicConfig,
       },
     };
-    this.checkOptions();
-    this.web3 = options.makeWeb3(this.getDefaultProvider());
+   
+    this.publicClient = options.makeWeb3Client(this.getPublicProvider());
 
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
@@ -76,15 +83,15 @@ export class Web3WalletsManager<W> {
     await this.disconnect();
 
     this.activeConnector = connector;
-    const { makeWeb3 } = this.options;
+    const { makeWeb3Client } = this.options;
 
     try {
       this.status.next('pending');
 
       const { provider } = await connector.connect();
 
-      const web3 = makeWeb3(provider);
-      this.txWeb3.next(web3);
+      const web3 = makeWeb3Client(provider);
+      this.privateClient.next(web3);
 
       const account = await getAccount(connector);
       this.account.next(account);
@@ -122,27 +129,37 @@ export class Web3WalletsManager<W> {
     this.chainIdSubscription = null;
     this.disconnectSubscription = null;
 
-    this.txWeb3.next(null);
+    this.privateClient.next(null);
     this.account.next(null);
     this.chainId.next(null);
     this.status.next('disconnected');
   }
 
   private checkOptions() {
-    if (
-      !('httpRpcUrl' in this.options.defaultProvider) &&
-      !('wsRpcUrl' in this.options.defaultProvider) &&
-      !('infuraAccessToken' in this.options.defaultProvider)
-    ) {
-      console.error(
-        'You need to configure one of these parameters: "httpRpcUrl", "wsRpcUrl" or "infuraAccessToken".',
-      );
+    if(!('networkId' in this.options.publicConfig) && !('httpRpcUrl' in this.options.publicConfig) && !('wsRpcUrl' in this.options.publicConfig) && !('infuraAccessToken' in this.options.publicConfig)) {
+        console.error(
+          'You need to configure one of these parameters: "httpRpcUrl", "wsRpcUrl" or "infuraAccessToken".',
+        );
     }
   }
 
-  private getDefaultProvider(): Web3ProvidersWs.WebsocketProvider | Web3ProvidersHttp.HttpProvider {
-    if ('httpRpcUrl' in this.options.defaultProvider) {
-      const { httpRpcUrl, options } = this.options.defaultProvider;
+  private getPublicProvider(): Web3ProvidersWs.WebsocketProvider | Web3ProvidersHttp.HttpProvider {
+    //check
+    this.checkOptions();
+
+    if('networkId' in this.options.publicConfig){
+      const { networkId, options } = this.options.publicConfig;
+      let chainConfig = this.getChainConfig(networkId);
+      let https = chainConfig?.rpcUrls.public.http;
+      let httpUrl:string ='';
+      if(https != undefined && https.length>0){
+        httpUrl = https[0];
+      }
+      return new HttpProvider(httpUrl, options);
+    }
+
+    if ('httpRpcUrl' in this.options.publicConfig) {
+      const { httpRpcUrl, options } = this.options.publicConfig;
       return new HttpProvider(httpRpcUrl, options);
     }
 
@@ -151,8 +168,8 @@ export class Web3WalletsManager<W> {
       delay: 5000,
     };
 
-    if ('wsRpcUrl' in this.options.defaultProvider) {
-      const { wsRpcUrl, options } = this.options.defaultProvider;
+    if ('wsRpcUrl' in this.options.publicConfig) {
+      const { wsRpcUrl, options } = this.options.publicConfig;
       return new WebsocketProvider(wsRpcUrl, {
         ...options,
         reconnect: {
@@ -162,8 +179,8 @@ export class Web3WalletsManager<W> {
       });
     }
 
-    if ('infuraAccessToken' in this.options.defaultProvider) {
-      const { infuraAccessToken, network = 'mainnet', options } = this.options.defaultProvider;
+    if ('infuraAccessToken' in this.options.publicConfig) {
+      const { infuraAccessToken, network = 'mainnet', options } = this.options.publicConfig;
       return new WebsocketProvider(`wss://${network}.infura.io/ws/v3/${infuraAccessToken}`, {
         ...options,
         reconnect: {
@@ -173,7 +190,7 @@ export class Web3WalletsManager<W> {
       });
     }
 
-    return assertNever(this.options.defaultProvider);
+    return assertNever(this.options.publicConfig);
   }
 
   private handleAccountChange(account: string) {
@@ -186,6 +203,16 @@ export class Web3WalletsManager<W> {
 
   private handleDisconnect() {
     this.disconnect();
+  }
+
+  /** private method */
+  private getChainConfig(networkId: string) : ChainConfig | null{
+    let chainList:ChainWrapper = new ChainWrapper();
+    let chainConfig = chainList.getChainConfig(networkId);
+    if(chainConfig == undefined){
+      return null;
+    }
+    return chainConfig;
   }
 }
 
