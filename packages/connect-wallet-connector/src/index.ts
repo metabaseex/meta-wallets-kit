@@ -1,10 +1,10 @@
 /* eslint-disable import/no-duplicates */
 import { BaseConnector } from '@meta-wallets-kit/core';
 import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
-import  EthereumProvider  from '@walletconnect/ethereum-provider';
-//import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider';
+import type WalletConnectProvider  from '@walletconnect/ethereum-provider';
+import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 
-export interface EthereumProviderOptions {
+/* export interface EthereumProviderOptions {
   projectId: string;
   chains: number[];
   optionalChains?: number[];
@@ -13,12 +13,12 @@ export interface EthereumProviderOptions {
   events?: string[];
   optionalEvents?: string[];
   showQrModal: boolean;
-}
+} */
 
 export type ConnectWalletConnectorConfig = EthereumProviderOptions;
 
 export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload {
-  provider: EthereumProvider;
+  provider: WalletConnectProvider;
 }
 
 export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectionPayload> {
