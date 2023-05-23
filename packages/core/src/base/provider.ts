@@ -14,4 +14,7 @@ declare module '@meta-wallets-kit/provider' {
     result?: any;
     error?: string;
   }
+
+  export class EmptyProvider{
+  }
 }

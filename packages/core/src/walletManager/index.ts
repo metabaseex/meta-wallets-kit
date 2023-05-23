@@ -19,7 +19,7 @@ type HttpProviderOptions = ConstructorParameters<typeof HttpProvider>[1];
 type InfuraNetwork = 'rinkeby' | 'kovan' | 'mainnet' | 'ropsten' | 'goerli';
 
 interface Options<W> {
-  publicConfig: ConfigOfPublicProvider;
+
   makeWeb3Client(provider: Provider): W;
 }
 
@@ -46,8 +46,11 @@ type ConfigOfPublicProvider =
 
 export class Web3WalletsManager<W> {
 
-  public publicClient: W;
-  public privateClient = new BehaviorSubject<W | null>(null);
+  public localConfig: ConfigOfPublicProvider;
+  public localClient: W | undefined;
+  public hasLocalClient:boolean = false;
+
+  public wallectClient = new BehaviorSubject<W | null>(null);
   //properties
   public account = new BehaviorSubject<string | null>(null);
   public chainId = new BehaviorSubject<number | null>(null);
@@ -61,16 +64,13 @@ export class Web3WalletsManager<W> {
   private disconnectSubscription: SubscribedObject | null = null;
 
   constructor(options: Options<W>) {
+    this.localConfig={
+      networkId:'bsc_97',
+    }
     this.options = {
       ...options,
-      publicConfig: {
-        network: 'mainnet',
-        ...options.publicConfig,
-      },
     };
-   
-    this.publicClient = options.makeWeb3Client(this.getPublicProvider());
-
+    //init web manager
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
 
@@ -91,7 +91,7 @@ export class Web3WalletsManager<W> {
       const { provider } = await connector.connect();
 
       const web3 = makeWeb3Client(provider);
-      this.privateClient.next(web3);
+      this.wallectClient.next(web3);
 
       const account = await getAccount(connector);
       this.account.next(account);
@@ -132,32 +132,56 @@ export class Web3WalletsManager<W> {
     return chainConfig;
   }
 
+  public async createLocalClient(localConfig: ConfigOfPublicProvider){
+    this.localConfig = {
+      ...localConfig,
+    };
+    this.localClient = this.options.makeWeb3Client(this.getLocalProvider());
+    this.hasLocalClient = true;
+  }
+
+  public async destroyLocalClient(){
+    if(this.hasLocalClient){
+      if(this.localClient instanceof HttpProvider){
+        if(this.localClient.connected){
+          this.localClient.disconnect();
+        }
+      }else if(this.localClient instanceof WebsocketProvider){
+        if(this.localClient.connected){
+          this.localClient.disconnect(0,'');
+        }
+      }
+      this.localClient =  undefined ;
+    }
+    this.hasLocalClient = false;
+  }
+
   private resetState() {
     this.activeConnector = null;
     this.accountSubscription = null;
     this.chainIdSubscription = null;
     this.disconnectSubscription = null;
 
-    this.privateClient.next(null);
+    this.wallectClient.next(null);
     this.account.next(null);
     this.chainId.next(null);
     this.status.next('disconnected');
   }
 
   private checkOptions() {
-    if(!('networkId' in this.options.publicConfig) && !('httpRpcUrl' in this.options.publicConfig) && !('wsRpcUrl' in this.options.publicConfig) && !('infuraAccessToken' in this.options.publicConfig)) {
+    if(!('networkId' in this.localConfig) && !('httpRpcUrl' in this.localConfig) && !('wsRpcUrl' in this.localConfig) && !('infuraAccessToken' in this.localConfig)) {
         console.error(
           'You need to configure one of these parameters: "httpRpcUrl", "wsRpcUrl" or "infuraAccessToken".',
         );
     }
   }
 
-  private getPublicProvider(): Web3ProvidersWs.WebsocketProvider | Web3ProvidersHttp.HttpProvider {
+  private getLocalProvider(): Web3ProvidersWs.WebsocketProvider | Web3ProvidersHttp.HttpProvider {
     //check
     this.checkOptions();
 
-    if('networkId' in this.options.publicConfig){
-      const { networkId, options } = this.options.publicConfig;
+    if('networkId' in this.localConfig){
+      const { networkId, options } = this.localConfig;
       let chainConfig = this.getChainConfig(networkId);
       let https = chainConfig?.rpcUrls.public.http;
       let httpUrl:string ='';
@@ -168,8 +192,8 @@ export class Web3WalletsManager<W> {
       return new HttpProvider(httpUrl, options);
     }
 
-    if ('httpRpcUrl' in this.options.publicConfig) {
-      const { httpRpcUrl, options } = this.options.publicConfig;
+    if ('httpRpcUrl' in this.localConfig) {
+      const { httpRpcUrl, options } = this.localConfig;
       return new HttpProvider(httpRpcUrl, options);
     }
 
@@ -178,8 +202,8 @@ export class Web3WalletsManager<W> {
       delay: 5000,
     };
 
-    if ('wsRpcUrl' in this.options.publicConfig) {
-      const { wsRpcUrl, options } = this.options.publicConfig;
+    if ('wsRpcUrl' in this.localConfig) {
+      const { wsRpcUrl, options } = this.localConfig;
       return new WebsocketProvider(wsRpcUrl, {
         ...options,
         reconnect: {
@@ -189,8 +213,8 @@ export class Web3WalletsManager<W> {
       });
     }
 
-    if ('infuraAccessToken' in this.options.publicConfig) {
-      const { infuraAccessToken, network = 'mainnet', options } = this.options.publicConfig;
+    if ('infuraAccessToken' in this.localConfig) {
+      const { infuraAccessToken, network = 'mainnet', options } = this.localConfig;
       return new WebsocketProvider(`wss://${network}.infura.io/ws/v3/${infuraAccessToken}`, {
         ...options,
         reconnect: {
@@ -200,7 +224,7 @@ export class Web3WalletsManager<W> {
       });
     }
 
-    return assertNever(this.options.publicConfig);
+    return assertNever(this.localConfig);
   }
   
   private handleAccountChange(account: string) {

@@ -56,7 +56,7 @@ async function send<T>(
 ): Promise<{ result: T; sendingInterface: SendingInterface }> {
   if (sendingInterface !== 'Old Web3.js') {
     try {
-      const sendResult = await provider.sendAsync(method);
+      const sendResult = await provider.send(method);
       const result = convert(isJsonRPCResponse(sendResult) ? sendResult.result : sendResult);
       return { result, sendingInterface: 'EIP 1193' };
     } catch {
@@ -66,9 +66,7 @@ async function send<T>(
 
   const result: T = await new Promise((resolve, reject) => {
     (provider.sendAsync || provider.send).call(
-      provider,
-      { method },
-      (err: any, sendResult: any) => {
+      provider, { method },(err: any, sendResult: any) => {
         err && reject(err);
         resolve(convert(sendResult?.result));
       },
