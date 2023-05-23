@@ -1,4 +1,4 @@
 export * from './baseConnector';
-export type { Provider} from '@meta-wallets-kit/provider';
-export { EmptyProvider } from '@meta-wallets-kit/provider';
+export type { Provider} from './provider';
+export { EmptyProvider } from './provider';
 export * from './IConnector';

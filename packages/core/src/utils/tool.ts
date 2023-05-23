@@ -1,4 +1,4 @@
-import { Provider } from '@meta-wallets-kit/provider';
+import { Provider } from '@meta-wallets-kit/core';
 
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 

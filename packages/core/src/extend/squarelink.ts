@@ -1,6 +1,6 @@
 /* eslint-disable import/no-default-export */
 declare module 'squarelink' {
-  import { Provider } from '@meta-wallets-kit/provider';
+  import { Provider } from '@meta-wallets-kit/core';
 
   export type SquarelinkProvider = Provider & {
     enable(): Promise<void>;
