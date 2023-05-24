@@ -1,12 +1,7 @@
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import {
-  DefaultConnectionPayload,
-  DisconnectCallback,
-  SubscribedObject,
-} from '@meta-wallets-kit/core';
+import {  DefaultConnectionPayload,DisconnectCallback, SubscribedObject,} from '@meta-wallets-kit/core';
 
 import { InpageProvider } from './@types/extend-window';
-
 import { MetaMaskWalletSdk } from './sdk/metamask';
 
 /** Export Targets */

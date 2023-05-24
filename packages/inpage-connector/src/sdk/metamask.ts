@@ -89,10 +89,6 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
         let chainId = chainConfig?.chainId;
         const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
         try {
-           let isConfig = chainConfig==null;
-           if(isConfig){
-
-           }
            return  await window.ethereum.request({
                 method: "wallet_switchEthereumChain",
                 params: [{ chainId: chainIdHex }],

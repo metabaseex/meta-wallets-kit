@@ -1,19 +1,9 @@
 /* eslint-disable import/no-duplicates */
-import { BaseConnector } from '@meta-wallets-kit/core';
+import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
 import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
 import type WalletConnectProvider  from '@walletconnect/ethereum-provider';
 import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
-
-/* export interface EthereumProviderOptions {
-  projectId: string;
-  chains: number[];
-  optionalChains?: number[];
-  methods?: string[];
-  optionalMethods?: string[];
-  events?: string[];
-  optionalEvents?: string[];
-  showQrModal: boolean;
-} */
+import { EthereumProvider  } from '@walletconnect/ethereum-provider';
 
 export type ConnectWalletConnectorConfig = EthereumProviderOptions;
 
@@ -27,21 +17,19 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public async connect(): Promise<ConnectWalletConnectionPayload> {
-    const WalletConnectLibrary = await import('@walletconnect/ethereum-provider');
-    const Provider = WalletConnectLibrary.default;
-    const provider = await Provider.init(this.config);
+    //const WalletConnectLibrary = await import('@walletconnect/ethereum-provider');
+    //const ethProvider = WalletConnectLibrary.default;
+    const provider = await EthereumProvider.init(this.config);
     // Web3Modal is disabled by default, enable it during init() to display a QR code modal
     //await provider.connect({
     //   chains, // OPTIONAL chain ids
     //   rpcMap, // OPTIONAL rpc urls
     //   pairingTopic // OPTIONAL pairing topic
     // })
-// or
+    // or
     await provider.enable();
 
-    this.payload = {
-      provider,
-    };
+    this.payload = { provider,};
 
     return this.payload;
   }
@@ -58,13 +46,58 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public async switchAccount(account: string): Promise<string | null> {
-    if(account == null) return null;
-    throw new Error('Method not implemented.');
+    if(account == null || account=='') return null;
+    if(this.payload == null || this.payload.provider == null) return null;
+    try {
+        const result: string[] = await this.payload?.provider.request({
+        method: "wallet_requestPermissions",
+        params: [
+            {
+                eth_accounts: { account },
+            },
+        ],
+        });
+        return result[0];
+    } catch (e) {
+        return "Error: Unable to execute request: " + e?.message;
+    }
   }
-  public async switchOrAddChain(): Promise<number | null> {
-    throw new Error('Method not implemented.');
+  public async switchOrAddChain(networkId:string): Promise<number | null> {
+    if(networkId == null || networkId=='') return null;
+    if(this.payload == null || this.payload.provider == null) return null;
+    let chainList:ChainWrapper = new ChainWrapper();
+    let chainConfig = chainList.getChainConfig(networkId);
+    if(chainConfig == undefined){
+      return null;
+    }
+
+    let chainId = chainConfig?.chainId;
+        const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
+        try {
+           return  await this.payload?.provider.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: chainIdHex }],
+            });
+        } catch (switchError) {
+        }
+
+        return null;
+
   }
-  public async addTokenToWallet(): Promise<boolean | null> {
-    throw new Error('Method not implemented.');
+  public async addTokenToWallet(token:TokenConfig): Promise<boolean | null> {
+    if(token == null ) return null;
+    if(this.payload == null || this.payload.provider == null) return null;
+    return await this.payload?.provider.request({
+        method: "wallet_watchAsset",
+        params: {
+            type:token.type,
+            options: {
+                address:token.address, // The address that the token is at.
+                symbol:token.symbol, // A ticker symbol or shorthand, up to 5 chars.
+                decimals:token.decimals, // The number of decimals in the token
+                image: token.imageURL, // A string url of the token logo
+            },
+        },
+    });
   }
 }
