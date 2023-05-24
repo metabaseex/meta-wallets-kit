@@ -82,22 +82,22 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
 
     public subscribeChainChanged(callback: ChainIdCallback): SubscribedObject {
         const convertedCallback = (chainId: number | string) => {
-        const convertedChainId = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
+            const convertedChainId = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
 
-        if (Number.isNaN(convertedChainId)) {
-            throw new Error('ChainId is incorrect');
-        } else {
-            callback(convertedChainId);
-        }
+            if (Number.isNaN(convertedChainId)) {
+                throw new Error('ChainId is incorrect');
+            } else {
+                callback(convertedChainId);
+            }
         };
 
         this.payload?.provider.on && this.payload.provider.on('chainChanged', convertedCallback);
 
         return {
-        unsubscribe: () => {
-            this.payload?.provider.removeListener &&
-            this.payload.provider.removeListener('chainChanged', convertedCallback);
-        },
+            unsubscribe: () => {
+                this.payload?.provider.removeListener &&
+                this.payload.provider.removeListener('chainChanged', convertedCallback);
+            },
         };
     }
 
@@ -111,5 +111,17 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
             },
         };
     }
+
+   /*  public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject {
+        if(callback != null){
+            
+        }
+
+        return {
+            unsubscribe: () => {
+                
+            },
+        };
+    } */
 }
   

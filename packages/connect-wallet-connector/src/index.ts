@@ -1,6 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
+import { DefaultConnectionPayload} from '@meta-wallets-kit/core';
 import type WalletConnectProvider  from '@walletconnect/ethereum-provider';
 import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { EthereumProvider  } from '@walletconnect/ethereum-provider';
@@ -27,8 +27,19 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     //   pairingTopic // OPTIONAL pairing topic
     // })
     // or
-    await provider.enable();
-
+    if(this.config.showQrModal){
+      //use web3 modal
+      await provider.enable();
+    }else{
+      //custom handle message
+      provider.on("display_uri", (uri: string) => {
+        // ... custom logic
+        console.log('kits:connect wallet:');
+        console.log(uri);
+      });
+      await provider.connect();
+    }
+    
     this.payload = { provider,};
 
     return this.payload;
@@ -100,4 +111,11 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         },
     });
   }
+
+  /* public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject{
+    
+    return super.subscribeShowUri((uri: string) => {
+      callback(uri);
+    });
+  } */
 }
