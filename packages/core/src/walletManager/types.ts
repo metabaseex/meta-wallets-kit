@@ -1,9 +1,9 @@
-import { Provider } from '@meta-wallets-kit/core';
+import { BaseProvider } from 'meta-base-provider';
 
 export type ConnectionStatus = 'disconnected' | 'pending' | 'connected';
 
 export interface ConnectResult {
-  provider: Provider;
+  provider: BaseProvider;
   account: string;
   chainId: number;
 }

@@ -1,8 +1,8 @@
 /* eslint-disable import/no-default-export */
 declare module 'fortmatic' {
-  import { Provider } from '@meta-wallets-kit/core';
+  import { BaseProvider } from 'meta-base-provider';
 
-  export interface FortmaticProvider extends Provider {
+  export interface FortmaticProvider extends BaseProvider {
     enable(): Promise<void>;
   }
 

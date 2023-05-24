@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
-import { IConnector, Provider, SubscribedObject } from '../base';
+import { IConnector, BaseProvider, SubscribedObject } from '../base';
 
 import { ConnectResult, ConnectionStatus } from './types';
 
@@ -20,7 +20,7 @@ type InfuraNetwork = 'rinkeby' | 'kovan' | 'mainnet' | 'ropsten' | 'goerli';
 
 interface Options<W> {
 
-  makeWeb3Client(provider: Provider): W;
+  makeWeb3Client(provider: BaseProvider ): W;
 }
 
 type ConfigOfPublicProvider =

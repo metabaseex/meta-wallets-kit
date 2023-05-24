@@ -1,11 +1,11 @@
 //base common types
-import type { Provider } from '.';
+import type { BaseProvider } from '.';
 import type { TokenConfig } from '../model';
 
 type MaybePromise<T> = T | Promise<T>;
 
 export interface DefaultConnectionPayload {
-  provider: Provider;
+  provider: BaseProvider;
 }
 
 export interface IConnector<P extends DefaultConnectionPayload = DefaultConnectionPayload> {

@@ -1,4 +1,4 @@
-import { Provider } from '@meta-wallets-kit/core';
+import { BaseProvider } from 'meta-base-provider';
 
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 
@@ -17,7 +17,7 @@ export function invariant(condition: any, message?: string): asserts condition {
 export type SendingInterface = 'EIP 1193' | 'Old Web3.js';
 
 export async function getAccount(
-  provider: Provider,
+  provider: BaseProvider,
   sendingInterface?: SendingInterface,
 ): Promise<{ account: string | null; sendingInterface: SendingInterface }> {
   const { result: account, sendingInterface: nextInterface } = await send<string | null>(
@@ -30,7 +30,7 @@ export async function getAccount(
 }
 
 export async function getChainId(
-  provider: Provider,
+  provider: BaseProvider,
   sendingInterface?: SendingInterface,
 ): Promise<{ chainId: number; sendingInterface: SendingInterface }> {
   const { result: chainId, sendingInterface: nextInterface } = await send<number>(
@@ -49,14 +49,14 @@ export async function getChainId(
 }
 
 async function send<T>(
-  provider: Provider,
+  provider: BaseProvider,
   method: string,
   convert: (value: any) => T,
   sendingInterface?: SendingInterface,
 ): Promise<{ result: T; sendingInterface: SendingInterface }> {
   if (sendingInterface !== 'Old Web3.js') {
     try {
-      const sendResult = await provider.send(method);
+      const sendResult = await provider.request(method);
       const result = convert(isJsonRPCResponse(sendResult) ? sendResult.result : sendResult);
       return { result, sendingInterface: 'EIP 1193' };
     } catch {
