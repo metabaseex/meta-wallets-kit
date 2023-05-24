@@ -1,7 +1,8 @@
 import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
-import { IConnector, BaseProvider, SubscribedObject } from '../base';
+import { IConnector, SubscribedObject } from '../base';
+import type { BaseProvider } from 'meta-base-provider';
 
 import { ConnectResult, ConnectionStatus } from './types';
 

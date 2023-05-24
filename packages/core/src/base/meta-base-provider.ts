@@ -1,4 +1,4 @@
-declare module 'meta-base-provider'{
+declare module 'meta-base-provider' {
   export type BaseProvider = any;
 
   export interface JsonRpcPayload {

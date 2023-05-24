@@ -1,4 +1,4 @@
-import { BaseProvider } from 'meta-base-provider';
+import type { BaseProvider } from 'meta-base-provider';
 
 const isProduction: boolean = process.env.NODE_ENV === 'production';
 

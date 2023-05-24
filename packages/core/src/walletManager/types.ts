@@ -1,4 +1,4 @@
-import { BaseProvider } from 'meta-base-provider';
+import type { BaseProvider } from 'meta-base-provider';
 
 export type ConnectionStatus = 'disconnected' | 'pending' | 'connected';
 

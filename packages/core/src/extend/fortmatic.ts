@@ -1,6 +1,6 @@
 /* eslint-disable import/no-default-export */
 declare module 'fortmatic' {
-  import { BaseProvider } from 'meta-base-provider';
+  import type { BaseProvider } from 'meta-base-provider';
 
   export interface FortmaticProvider extends BaseProvider {
     enable(): Promise<void>;

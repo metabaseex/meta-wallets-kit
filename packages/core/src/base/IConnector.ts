@@ -1,5 +1,5 @@
 //base common types
-import type { BaseProvider } from '.';
+import type { BaseProvider } from 'meta-base-provider';
 import type { TokenConfig } from '../model';
 
 type MaybePromise<T> = T | Promise<T>;
