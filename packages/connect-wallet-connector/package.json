@@ -37,8 +37,7 @@
   },
   "dependencies": {
     "@meta-wallets-kit/core": "^0.2.5",
-    "@walletconnect/ethereum-provider": "^2.7.6",
-    "@web3modal/standalone": "^2.4.1"
+    "@walletconnect/ethereum-provider": "^2.7.6"
   },
   "gitHead": "c8429ca2036045f66bb076a44428b992e4dc2056"
 }

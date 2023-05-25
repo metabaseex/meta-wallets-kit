@@ -1,30 +1,37 @@
-import {
-    ChainIdCallback,
-    ConnectCallback,
-    IConnector,
-    DefaultConnectionPayload,
-    DisconnectCallback,
-    ShowUriCallBack,
-    SubscribedObject,
-} from './IConnector';
+import { IConnector, DefaultConnectionPayload,} from './IConnector';
 import type { TokenConfig } from '../model';
-import { getAccount, getChainId, SendingInterface } from '../utils';
+import { getAccount, getChainId, normalizeChainId, SendingInterface } from '../utils';
 
-import { EventEmitter } from "events";
-  
-export abstract class BaseConnector<P extends DefaultConnectionPayload> implements IConnector<P> {
+import { default as EventEmitter } from 'eventemitter3'
+import { BaseProvider } from 'meta-base-provider';
 
+export type ConnectorData = {
+    account?: string
+    chainId?: number
+}
+
+export interface ConnectorEvents{
+    connected(data: ConnectorData): void;
+    changed(data: ConnectorData): void ;
+    disconnect(): void;
+    message({ type, data }: { type: string; data?: unknown }): void;
+    error(error: any): void;
+}
+
+export abstract class BaseConnector<P extends DefaultConnectionPayload> extends EventEmitter<ConnectorEvents> implements IConnector<P> {
+    //readonly message
+    public abstract readonly name: string;
     
     protected payload: P | null = null;
     private sendingInterface: SendingInterface = 'EIP 1193';
-    public events = new EventEmitter();
 
     public abstract connect(): Promise<P>;
 
     /** common fuction start */
     public async disconnect() {
+        //this.unSubScribeEvents();
+        
         this.payload = null;
-        this.events.removeAllListeners();
     }
 
     public async getAccount(): Promise<string | null> {
@@ -69,64 +76,51 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
 
     public abstract addTokenToWallet(token:TokenConfig) : Promise<boolean | null>;
 
+    private getProvider() : BaseProvider | null {
+        if(!this.payload || !this.payload?.provider) return null;
+        return this.payload.provider;
+    }
+
+
+    public subscribeEvents(provider:BaseProvider): void{
+        if(!provider || !provider.on) return;
+        provider.on('chainChanged',this.onChainChanged);
+        provider.on('accountsChanged',this.onAccountChanged);
+        provider.on('disconnect',this.onDisconnect);
+    }
+
+    public unSubScribeEvents(): void{
+        let provider = this.getProvider();
+        if(!provider || !provider.removeAllListeners) return;
+        provider?.removeAllListeners();
+    }
 
     /******** event function */
-    public subscribeAccountChanged(callback: ConnectCallback): SubscribedObject {
-        const convertedCallback = (accounts: string[]) => callback(accounts[0]);
-
-        this.payload?.provider.on && this.payload.provider.on('accountsChanged', convertedCallback);
-
-        return {
-            unsubscribe: () => {
-                this.payload?.provider.removeListener &&
-                this.payload.provider.removeListener('accountsChanged', convertedCallback);
-            },
-        };
+    protected onChainChanged = (chainId: number | string) => {
+        const nid = normalizeChainId(chainId);
+        this.emit('changed', { chainId:nid });
     }
-
-    public subscribeChainChanged(callback: ChainIdCallback): SubscribedObject {
-        const convertedCallback = (chainId: number | string) => {
-            const convertedChainId = typeof chainId === 'string' ? parseInt(chainId, 16) : chainId;
-
-            if (Number.isNaN(convertedChainId)) {
-                throw new Error('ChainId is incorrect');
-            } else {
-                callback(convertedChainId);
-            }
-        };
-
-        this.payload?.provider.on && this.payload.provider.on('chainChanged', convertedCallback);
-
-        return {
-            unsubscribe: () => {
-                this.payload?.provider.removeListener &&
-                this.payload.provider.removeListener('chainChanged', convertedCallback);
-            },
-        };
-    }
-
-    public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
-        this.payload?.provider.on && this.payload.provider.on('disconnect', callback);
-
-        return {
-            unsubscribe: () => {
-                this.payload?.provider.removeListener &&
-                this.payload.provider.removeListener('disconnect', callback);
-            },
-        };
-    }
-
-    public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject {
-        //just empty 
-        if(callback != null){
-            
+    protected onAccountChanged = (accounts: string[]) => {
+        if (accounts.length === 0) {
+            this.emit('disconnect');
+        }else{
+            this.emit('changed', { account: accounts[0] as string, })
         }
-
-        return {
-            unsubscribe: () => {
-                
-            },
-        };
-    } 
+    }
+    protected onDisconnect = async (error?: any) => {
+        // If MetaMask emits a `code: 1013` error, wait for reconnection before disconnecting
+        // https://github.com/MetaMask/providers/pull/120
+        //TO be checked
+        if(error?.code == '1013'){
+            const provider = this.getProvider();
+            if (provider) {
+            const isAuthorized = await this.getAccount()
+            if (isAuthorized) return
+            }
+        }
+        this.emit('disconnect');
+    }
 }
+
+
   

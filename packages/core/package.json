@@ -37,6 +37,7 @@
     "access": "public"
   },
   "dependencies": {
+    "eventemitter3": "^5.0.1",
     "rxjs": "^7.8.1",
     "ts-toolbelt": "^9.6.0",
     "web3-providers-http": "^1.10.0",

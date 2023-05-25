@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
-import { IConnector, SubscribedObject } from '../base';
+import { IConnector } from '../base';
 import type { BaseProvider } from 'meta-base-provider';
 
 import { ConnectResult, ConnectionStatus } from './types';
@@ -60,9 +60,9 @@ export class Web3WalletsManager<W> {
   private options: Options<W>;
   private activeConnector: IConnector | null = null;
   //event
-  private accountSubscription: SubscribedObject | null = null;
-  private chainIdSubscription: SubscribedObject | null = null;
-  private disconnectSubscription: SubscribedObject | null = null;
+  // private accountSubscription: SubscribedObject | null = null;
+  // private chainIdSubscription: SubscribedObject | null = null;
+  // private disconnectSubscription: SubscribedObject | null = null;
 
   constructor(options: Options<W>) {
     this.localConfig={
@@ -100,9 +100,9 @@ export class Web3WalletsManager<W> {
       const chainId = await getChainId(connector);
       this.chainId.next(chainId);
       //set event callback
-      this.accountSubscription = connector.subscribeAccountChanged(this.handleAccountChange);
-      this.chainIdSubscription = connector.subscribeChainChanged(this.handleChainIdChange);
-      this.disconnectSubscription = connector.subscribeDisconnect(this.handleDisconnect);
+      // this.accountSubscription = connector.subscribeAccountChanged(this.handleAccountChange);
+      // this.chainIdSubscription = connector.subscribeChainChanged(this.handleChainIdChange);
+      // this.disconnectSubscription = connector.subscribeDisconnect(this.handleDisconnect);
 
       this.status.next('connected');
 
@@ -115,9 +115,9 @@ export class Web3WalletsManager<W> {
 
   public async disconnect() {
     try {
-      this.accountSubscription && this.accountSubscription.unsubscribe();
-      this.chainIdSubscription && this.chainIdSubscription.unsubscribe();
-      this.disconnectSubscription && this.disconnectSubscription.unsubscribe();
+      // this.accountSubscription && this.accountSubscription.unsubscribe();
+      // this.chainIdSubscription && this.chainIdSubscription.unsubscribe();
+      // this.disconnectSubscription && this.disconnectSubscription.unsubscribe();
       this.activeConnector && (await this.activeConnector.disconnect());
     } finally {
       this.resetState();
@@ -159,9 +159,9 @@ export class Web3WalletsManager<W> {
 
   private resetState() {
     this.activeConnector = null;
-    this.accountSubscription = null;
-    this.chainIdSubscription = null;
-    this.disconnectSubscription = null;
+    // this.accountSubscription = null;
+    // this.chainIdSubscription = null;
+    // this.disconnectSubscription = null;
 
     this.wallectClient.next(null);
     this.account.next(null);

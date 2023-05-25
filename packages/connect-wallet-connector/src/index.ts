@@ -1,6 +1,6 @@
 /* eslint-disable import/no-duplicates */
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import { DefaultConnectionPayload,ShowUriCallBack,SubscribedObject } from '@meta-wallets-kit/core';
+import { DefaultConnectionPayload, } from '@meta-wallets-kit/core';
 import type WalletConnectProvider  from '@walletconnect/ethereum-provider';
 import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { EthereumProvider  } from '@walletconnect/ethereum-provider';
@@ -12,6 +12,8 @@ export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload
 }
 
 export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectionPayload> {
+
+  public readonly name: string='Wallet Connect';
 
   constructor(private config: ConnectWalletConnectorConfig) {
     super();
@@ -37,7 +39,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         // ... custom logic
         console.log('kits:connect wallet:');
         console.log(uri);
-        this.events.emit('display_uri',uri);
+        this.emit('message',{type:'display_uri',data: uri});
       });
       await provider.connect();
     }
@@ -48,13 +50,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public async disconnect() {
-    if (this.payload) {
-      /* const walletConnector = await this.payload.provider.getWalletConnector({
-        disableSessionCreation: true,
-      });
-      await walletConnector.killSession();
-      await this.payload.provider.stop(); */
-    }
+    super.unSubScribeEvents();
     super.disconnect();
     
   }
@@ -114,14 +110,4 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         },
     });
   }
-
-  public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject{
-    //this.payload?.provider.on && this.payload.provider.on('display_uri',callback);
-    return {
-        unsubscribe: () => {
-          this.payload?.provider.removeListener &&
-          this.payload.provider.removeListener('display_uri', callback);
-        },
-    };
-  } 
 }

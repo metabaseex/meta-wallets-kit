@@ -19,18 +19,21 @@ export interface IConnector<P extends DefaultConnectionPayload = DefaultConnecti
   switchAccount?(account: string): Promise<string | null>;
   switchOrAddChain?(networkId: string): Promise<number | null>;
   addTokenToWallet?(token: TokenConfig): Promise<boolean | null>;
+  subscribeEvents(provider:BaseProvider):void;
+  unSubScribeEvents():void;
+
   //event
-  subscribeAccountChanged(callback: ConnectCallback): SubscribedObject;
-  subscribeChainChanged(callback: ChainIdCallback): SubscribedObject;
-  subscribeDisconnect(callback: DisconnectCallback): SubscribedObject;
-  subscribeShowUri(callback: ShowUriCallBack): SubscribedObject;
+  // subscribeAccountChanged(callback: ConnectCallback): SubscribedObject;
+  // subscribeChainChanged(callback: ChainIdCallback): SubscribedObject;
+  // subscribeDisconnect(callback: DisconnectCallback): SubscribedObject;
+  // subscribeShowUri(callback: ShowUriCallBack): SubscribedObject;
 }
 
-export type SubscribedObject = { unsubscribe: () => void };
-export type ConnectCallback = (account: string) => void;
-export type ChainIdCallback = (chainId: number) => void;
-export type DisconnectCallback = (error?: any) => void;
-export type ShowUriCallBack =(url: string) => void;
+// export type SubscribedObject = { unsubscribe: () => void };
+// export type ConnectCallback = (account: string) => void;
+// export type ChainIdCallback = (chainId: number | string) => void;
+// export type DisconnectCallback = (error?: any) => void;
+// export type ShowUriCallBack =(url: string) => void;
 
 
 

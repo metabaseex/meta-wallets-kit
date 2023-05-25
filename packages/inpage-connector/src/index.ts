@@ -1,5 +1,5 @@
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import {  DefaultConnectionPayload,DisconnectCallback, SubscribedObject,} from '@meta-wallets-kit/core';
+import {  DefaultConnectionPayload,} from '@meta-wallets-kit/core';
 
 import { InpageProvider } from './@types/extend-window';
 import { MetaMaskWalletSdk } from './sdk/metamask';
@@ -14,6 +14,8 @@ export interface InpageConnectionPayload extends DefaultConnectionPayload {
 
 export class InpageConnector extends BaseConnector<InpageConnectionPayload> { 
   
+  public readonly name: string='Inject Connector';
+
   metaMask:MetaMaskWalletSdk = new MetaMaskWalletSdk();
 
   constructor(){
@@ -45,6 +47,8 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
     }
 
     this.payload = { provider, isMetamask };
+    //subscrib events
+    super.subscribeEvents(provider);
 
     return this.payload;
   }
@@ -69,18 +73,9 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
 
   public async addTokenToWallet(token:TokenConfig) : Promise<boolean | null>{
     if(token == null ) return null;
-
+    
     return await this.metaMask.addTokenToWallet(
       token.symbol,token.address,token.imageURL,token.decimals,token.type
     );
   }
-
-  public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {
-    return super.subscribeDisconnect((error?: any) => {
-      const isRecoverableMetamaskDisconnection = (this.payload?.provider?.isMetaMask && error?.code === 1013);
-      !isRecoverableMetamaskDisconnection && callback(error);
-    });
-  }
-
-
 }
