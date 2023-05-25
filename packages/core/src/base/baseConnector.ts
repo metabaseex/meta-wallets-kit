@@ -4,6 +4,7 @@ import {
     IConnector,
     DefaultConnectionPayload,
     DisconnectCallback,
+    ShowUriCallBack,
     SubscribedObject,
 } from './IConnector';
 import type { TokenConfig } from '../model';
@@ -112,7 +113,8 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
         };
     }
 
-   /*  public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject {
+    public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject {
+        //just empty 
         if(callback != null){
             
         }
@@ -122,6 +124,6 @@ export abstract class BaseConnector<P extends DefaultConnectionPayload> implemen
                 
             },
         };
-    } */
+    } 
 }
   
