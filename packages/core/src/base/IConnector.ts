@@ -4,11 +4,11 @@ import type { TokenConfig } from '../model';
 
 type MaybePromise<T> = T | Promise<T>;
 
-export interface DefaultConnectionPayload {
+export interface BaseConnectionPayload {
   provider: BaseProvider;
 }
 
-export interface IConnector<P extends DefaultConnectionPayload = DefaultConnectionPayload> {
+export interface IConnector<P extends BaseConnectionPayload = BaseConnectionPayload> {
   connect(): MaybePromise<P>;
   //common function
   disconnect(): MaybePromise<void>;

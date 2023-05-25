@@ -2,11 +2,11 @@
 import type { CoinbaseWalletProvider } from '@coinbase/wallet-sdk';
 import type CoinbaseWalletSDKClass from '@coinbase/wallet-sdk';
 import { BaseConnector,TokenConfig } from '@meta-wallets-kit/core';
-import { DefaultConnectionPayload } from '@meta-wallets-kit/core';
+import { BaseConnectionPayload } from '@meta-wallets-kit/core';
 
 type CoinbaseWalletSDKOptions = ConstructorParameters<typeof CoinbaseWalletSDKClass>[0];
 
-export interface CoinbaseConnectionPayload extends DefaultConnectionPayload {
+export interface CoinbaseConnectionPayload extends BaseConnectionPayload {
   provider: CoinbaseWalletProvider;
   coinbase: CoinbaseWalletSDKClass;
 }

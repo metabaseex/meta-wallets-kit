@@ -1,13 +1,13 @@
 /* eslint-disable import/no-duplicates */
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import { DefaultConnectionPayload, } from '@meta-wallets-kit/core';
+import { BaseConnectionPayload, } from '@meta-wallets-kit/core';
 import type WalletConnectProvider  from '@walletconnect/ethereum-provider';
 import  { EthereumProviderOptions }  from '@walletconnect/ethereum-provider/dist/types/EthereumProvider';
 import { EthereumProvider  } from '@walletconnect/ethereum-provider';
 
 export type ConnectWalletConnectorConfig = EthereumProviderOptions;
 
-export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload {
+export interface ConnectWalletConnectionPayload extends BaseConnectionPayload {
   provider: WalletConnectProvider;
 }
 

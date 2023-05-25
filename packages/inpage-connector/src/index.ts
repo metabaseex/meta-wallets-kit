@@ -1,5 +1,5 @@
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import {  DefaultConnectionPayload,} from '@meta-wallets-kit/core';
+import {  BaseConnectionPayload,} from '@meta-wallets-kit/core';
 
 import { InpageProvider } from './@types/extend-window';
 import { MetaMaskWalletSdk } from './sdk/metamask';
@@ -7,7 +7,7 @@ import { MetaMaskWalletSdk } from './sdk/metamask';
 /** Export Targets */
 export { InpageProvider };
 
-export interface InpageConnectionPayload extends DefaultConnectionPayload {
+export interface InpageConnectionPayload extends BaseConnectionPayload {
   provider: InpageProvider;
   isMetamask:boolean;
 }

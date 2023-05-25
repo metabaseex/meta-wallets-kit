@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
-import { IConnector } from '../base';
+import { BaseConnector, BaseConnectionPayload, IConnector } from '../base';
 import type { BaseProvider } from 'meta-base-provider';
 
 import { ConnectResult, ConnectionStatus } from './types';
@@ -80,8 +80,9 @@ export class Web3WalletsManager<W> {
     this.handleDisconnect = this.handleDisconnect.bind(this);
   }
 
-  public async connect(connector: IConnector): Promise<ConnectResult> {
-    await this.disconnect();
+  public async connect(connector: BaseConnector<BaseConnectionPayload>): Promise<ConnectResult> {
+
+    //await this.disconnect();
 
     this.activeConnector = connector;
     const { makeWeb3Client } = this.options;
@@ -105,6 +106,8 @@ export class Web3WalletsManager<W> {
       // this.disconnectSubscription = connector.subscribeDisconnect(this.handleDisconnect);
 
       this.status.next('connected');
+
+      connector.emit("connected",{ account: account as string,chainId:chainId });
 
       return { provider, account, chainId };
     } catch (error) {

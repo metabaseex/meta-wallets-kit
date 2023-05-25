@@ -1,4 +1,4 @@
-import { IConnector, DefaultConnectionPayload,} from './IConnector';
+import { IConnector, BaseConnectionPayload,} from './IConnector';
 import type { TokenConfig } from '../model';
 import { getAccount, getChainId, normalizeChainId, SendingInterface } from '../utils';
 
@@ -18,7 +18,7 @@ export interface ConnectorEvents{
     error(error: any): void;
 }
 
-export abstract class BaseConnector<P extends DefaultConnectionPayload> extends EventEmitter<ConnectorEvents> implements IConnector<P> {
+export abstract class BaseConnector<P extends BaseConnectionPayload> extends EventEmitter<ConnectorEvents> implements IConnector<P> {
     //readonly message
     public abstract readonly name: string;
     
