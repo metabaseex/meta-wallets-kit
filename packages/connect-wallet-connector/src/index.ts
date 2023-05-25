@@ -12,6 +12,7 @@ export interface ConnectWalletConnectionPayload extends DefaultConnectionPayload
 }
 
 export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectionPayload> {
+
   constructor(private config: ConnectWalletConnectorConfig) {
     super();
   }
@@ -36,6 +37,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         // ... custom logic
         console.log('kits:connect wallet:');
         console.log(uri);
+        this.events.emit('display_uri',uri);
       });
       await provider.connect();
     }
@@ -54,6 +56,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
       await this.payload.provider.stop(); */
     }
     super.disconnect();
+    
   }
 
   public async switchAccount(account: string): Promise<string | null> {
@@ -113,7 +116,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public subscribeShowUri(callback: ShowUriCallBack): SubscribedObject{
-    this.payload?.provider.on && this.payload.provider.on('display_uri',callback);
+    //this.payload?.provider.on && this.payload.provider.on('display_uri',callback);
     return {
         unsubscribe: () => {
           this.payload?.provider.removeListener &&

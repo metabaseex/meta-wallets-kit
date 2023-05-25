@@ -10,18 +10,21 @@ import {
 import type { TokenConfig } from '../model';
 import { getAccount, getChainId, SendingInterface } from '../utils';
 
-  
+import { EventEmitter } from "events";
   
 export abstract class BaseConnector<P extends DefaultConnectionPayload> implements IConnector<P> {
 
+    
     protected payload: P | null = null;
     private sendingInterface: SendingInterface = 'EIP 1193';
+    public events = new EventEmitter();
 
     public abstract connect(): Promise<P>;
 
     /** common fuction start */
     public async disconnect() {
         this.payload = null;
+        this.events.removeAllListeners();
     }
 
     public async getAccount(): Promise<string | null> {
