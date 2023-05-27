@@ -2,7 +2,7 @@ import { BehaviorSubject } from 'rxjs';
 import * as Web3ProvidersWs from 'web3-providers-ws';
 import * as Web3ProvidersHttp from 'web3-providers-http';
 import { BaseConnector, BaseConnectionPayload, IConnector } from '../base';
-//import type { BaseProvider } from 'meta-base-provider';
+import type { BaseProvider } from 'meta-base-provider';
 
 import { ConnectResult, ConnectionStatus } from './types';
 
@@ -19,9 +19,14 @@ type HttpProviderOptions = ConstructorParameters<typeof HttpProvider>[1];
 
 //type InfuraNetwork = 'rinkeby' | 'kovan' | 'mainnet' | 'ropsten' | 'goerli';
 
+interface ProviderOptions<W> {
+  makeWeb3Client(provider: BaseProvider ): W;
+}
+
 type ConfigOfChain = {
   networkId: string;
   chainNum: Number;
+  
 }
 
 type ConfigOfPublicProvider =
@@ -35,25 +40,27 @@ type ConfigOfPublicProvider =
 
 export class Web3WalletsManager<W> {
   //global
+  private options: ProviderOptions<W>;
   public hasChainConfig: boolean = false; 
-  public chainConfig: ConfigOfChain = {
-    networkId:'',
-    chainNum:1,
-  };
+  public chainConfig: ConfigOfChain = { networkId:'', chainNum:1,};
   //wallet provider
-  public wallectProvider = new BehaviorSubject<W | null>(null);
+  public wallectClient = new BehaviorSubject<W | null>(null);
   public account = new BehaviorSubject<string | null>(null);
   public chainId = new BehaviorSubject<number | null>(null);
   public status = new BehaviorSubject<ConnectionStatus>('disconnected');
   private activeConnector: IConnector | null = null;
 
+  
   //user local client,for some local query function,
   //optional to use,unnecessary to create
   public localConfig: ConfigOfPublicProvider = {};
-  public localProvider: any | undefined;
-  public hasLocalProvider:boolean = false;
+  public localClient: any | undefined;
+  public hasLocalClient:boolean = false;
 
-  constructor() {
+  constructor(options: ProviderOptions<W>) {
+    this.options = {
+      ...options,
+    };
     //init web manager
     this.connect = this.connect.bind(this);
     this.disconnect = this.disconnect.bind(this);
@@ -74,11 +81,13 @@ export class Web3WalletsManager<W> {
   public async connect(connector: BaseConnector<BaseConnectionPayload>): Promise<ConnectResult> {
     //await this.disconnect();
     this.activeConnector = connector;
+    const { makeWeb3Client } = this.options;
     try {
       this.status.next('pending');
 
       const { provider } = await connector.connect();
-      this.wallectProvider.next(provider);
+      const web3 = makeWeb3Client(provider);
+      this.wallectClient.next(web3);
 
       const account = await getAccount(connector);
       this.account.next(account);
@@ -127,24 +136,24 @@ export class Web3WalletsManager<W> {
       infuraKey: '',
       ...localConfig
     }
-    this.localProvider = this.getLocalProvider();
-    this.hasLocalProvider = true;
+    this.localClient = this.options.makeWeb3Client(this.getLocalProvider());
+    this.hasLocalClient = true;
   }
 
   public async destroyLocalClient(){
-    if(this.hasLocalProvider){
-      if(this.localProvider instanceof HttpProvider){
-        if(this.localProvider.connected){
-          this.localProvider.disconnect();
+    if(this.hasLocalClient){
+      if(this.localClient instanceof HttpProvider){
+        if(this.localClient.connected){
+          this.localClient.disconnect();
         }
-      }else if(this.localProvider instanceof WebsocketProvider){
-        if(this.localProvider.connected){
-          this.localProvider.disconnect(0,'');
+      }else if(this.localClient instanceof WebsocketProvider){
+        if(this.localClient.connected){
+          this.localClient.disconnect(0,'');
         }
       }
-      this.localProvider =  undefined ;
+      this.localClient =  undefined ;
     }
-    this.hasLocalProvider = false;
+    this.hasLocalClient = false;
   }
 
   /************ private method *******/
@@ -152,7 +161,7 @@ export class Web3WalletsManager<W> {
   private resetState() {
     this.activeConnector = null;
 
-    this.wallectProvider.next(null);
+    this.wallectClient.next(null);
     this.account.next(null);
     this.chainId.next(null);
     this.status.next('disconnected');
