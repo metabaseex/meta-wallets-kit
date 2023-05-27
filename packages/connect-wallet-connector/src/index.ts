@@ -55,6 +55,15 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         console.log(e);
       });
 
+      provider.on('session_update',(e)=>{
+        console.log('wallect connect: session update');
+        console.log(e);
+      });
+      provider.on('session_delete',(e)=>{
+        console.log('wallect connect: session update');
+        console.log(e);
+      });
+
       await provider.connect();
     }
     
