@@ -68,19 +68,17 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
         return this.payload;
     }
 
-    /** common fuction end */
-
     public abstract switchAccount(account:string) : Promise<string | null>;
 
     public abstract switchOrAddChain(networkId:string) : Promise<number | null>;
 
     public abstract addTokenToWallet(token:TokenConfig) : Promise<boolean | null>;
 
+    /** common fuction end */
     private getProvider() : BaseProvider | null {
         if(!this.payload || !this.payload?.provider) return null;
         return this.payload.provider;
     }
-
 
     public subscribeEvents(provider:BaseProvider): void{
         if(!provider || !provider.on) return;

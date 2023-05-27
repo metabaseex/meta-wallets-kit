@@ -123,7 +123,7 @@ export class Web3WalletsManager<W> {
     return chainConfig;
   }
 
-  /*** Optional: Local Rpc Client */
+  /*** Optional Function: Local Rpc Client */
   public async createLocalClient(localConfig: ConfigOfPublicProvider){
     if(!this.hasChainConfig){
       console.log('meta: chain config first');
