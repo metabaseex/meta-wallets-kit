@@ -23,7 +23,7 @@ export async function getAccount(
   const { result: account, sendingInterface: nextInterface } = await send<string | null>(
     provider,
     'eth_accounts',
-    (accounts: string[]) => accounts[0] || null,
+    (accounts: string[]) => ((accounts!=null && accounts.length>0)?accounts[0]:'') || null,
     sendingInterface,
   );
   return { account, sendingInterface: nextInterface };
