@@ -1,6 +1,6 @@
 import { IConnector, BaseConnectionPayload,} from './IConnector';
 import type { TokenConfig } from '../model';
-import { getAccount, getChainId, normalizeChainId, SendingInterface } from '../utils';
+import { normalizeChainId, SendingInterface } from '../utils';
 
 import { default as EventEmitter } from 'eventemitter3'
 import { BaseProvider } from 'meta-base-provider';
@@ -23,7 +23,9 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     public abstract readonly name: string;
     
     protected payload: P | null = null;
-    private sendingInterface: SendingInterface = 'EIP 1193';
+    protected sendingInterface: SendingInterface = 'EIP 1193';
+
+    protected data:ConnectorData = { account:'',chainId:1 };
 
     public abstract connect(): Promise<P>;
 
@@ -34,35 +36,10 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
         this.payload = null;
     }
 
-    public async getAccount(): Promise<string | null> {
-        if (!this.payload) {
-            return null;
-        }
+    public abstract getAccount(): Promise<string | null>;  
 
-        const { account, sendingInterface } = await getAccount(
-            this.payload.provider,
-            this.sendingInterface,
-        );
-
-        this.sendingInterface = sendingInterface;
-
-        return account;
-    }
-
-    public async getChainId(): Promise<number | null> {
-        if (!this.payload) {
-        return null;
-        }
-
-        const { chainId, sendingInterface } = await getChainId(
-            this.payload.provider,
-            this.sendingInterface,
-        );
-
-        this.sendingInterface = sendingInterface;
-
-        return chainId;
-    }
+    public abstract getChainId(): Promise<number | null>;
+   
 
     public getConnectionPayload() {
         return this.payload;
@@ -101,13 +78,18 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     /******** event function */
     protected onChainChanged = (chainId: number | string) => {
         const nid = normalizeChainId(chainId);
+        this.data.chainId = nid;
         this.emit('changed', { chainId:nid });
     }
     protected onAccountChanged = (accounts: string[]) => {
         if (accounts.length === 0) {
             this.emit('disconnect');
+            this.data.account = '';
         }else{
-            this.emit('changed', { account: accounts[0] as string, })
+            let curAccount=((accounts!=null && accounts.length>0) ? accounts[0] :'');
+            this.data.account = curAccount;
+           
+            this.emit('changed', { account: (curAccount as string), })
         }
     }
     protected onDisconnect = async (error?: any) => {

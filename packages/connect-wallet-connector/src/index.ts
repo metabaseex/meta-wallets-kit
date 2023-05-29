@@ -78,6 +78,33 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     
   }
 
+  public async getAccount(): Promise<string | null> {
+    if (!this.data) {
+        return null;
+    }
+    let account = '';
+    if(this.data?.account == undefined){
+      account = '';
+    }else{
+      account = this.data?.account;
+    }
+    return account;
+  }
+
+
+  public async getChainId(): Promise<number | null>{
+    if (!this.data) {
+      return null;
+    }
+    let chainId = 0;
+    if(this.data?.chainId == undefined){
+      chainId = 0;
+    }else{
+      chainId = this.data?.chainId;
+    }
+    return chainId;
+  }
+
   public async switchAccount(account: string): Promise<string | null> {
     if(account == null || account=='') return null;
     if(this.payload == null || this.payload.provider == null) return null;

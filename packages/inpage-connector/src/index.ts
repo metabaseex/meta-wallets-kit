@@ -3,6 +3,7 @@ import {  BaseConnectionPayload,} from '@meta-wallets-kit/core';
 
 import { InpageProvider } from './@types/extend-window';
 import { MetaMaskWalletSdk } from './sdk/metamask';
+import { getAccount, getChainId } from '@meta-wallets-kit/core';
 
 /** Export Targets */
 export { InpageProvider };
@@ -54,6 +55,36 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
     
     return this.payload;
   }
+
+  public async getAccount(): Promise<string | null> {
+    if (!this.payload) {
+        return null;
+    }
+
+    const { account, sendingInterface } = await getAccount(
+        this.payload.provider,
+        this.sendingInterface,
+    );
+
+    this.sendingInterface = sendingInterface;
+
+    return account;
+  }
+
+  public async getChainId(): Promise<number | null> {
+    if (!this.payload) {
+      return null;
+    }
+
+    const { chainId, sendingInterface } = await getChainId(
+        this.payload.provider,
+        this.sendingInterface,
+    );
+
+    this.sendingInterface = sendingInterface;
+
+    return chainId;
+}
 
   public async switchAccount(account:string) : Promise<string | null>{
     if(account == null || account=='') return null;
