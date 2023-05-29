@@ -88,9 +88,14 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     }
 
     public unSubScribeEvents(): void{
-        let provider = this.getProvider();
-        if(!provider || !provider.removeAllListeners) return;
-        provider?.removeAllListeners();
+        try{
+            let provider = this.getProvider();
+            if(!provider || !provider.removeAllListeners) return;
+            provider?.removeAllListeners();
+        }finally{
+
+        }
+        
     }
 
     /******** event function */
