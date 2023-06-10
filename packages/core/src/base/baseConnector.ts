@@ -99,8 +99,8 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
         if(error?.code == '1013'){
             const provider = this.getProvider();
             if (provider) {
-            const isAuthorized = await this.getAccount()
-            if (isAuthorized) return
+                const isAuthorized = await this.getAccount()
+                if (isAuthorized) return
             }
         }
         this.emit('disconnect');

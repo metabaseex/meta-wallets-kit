@@ -26,7 +26,6 @@ interface ProviderOptions<W> {
 type ConfigOfChain = {
   networkId: string;
   chainNum: Number;
-  
 }
 
 type ConfigOfPublicProvider =

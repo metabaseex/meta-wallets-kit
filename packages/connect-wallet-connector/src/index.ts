@@ -34,6 +34,11 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     //subscribe events
     super.subscribeEvents(provider);
 
+    provider.on("connect",(e)=>{
+      console.log('wallect connect: connect');
+      console.log(e);
+    });
+    
     if(this.config.showQrModal){
       //use web3 modal
       await provider.enable();
@@ -45,10 +50,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         console.log(uri);
         this.emit('message',{type:'display_uri',data: uri});
       });
-      provider.on("connect",(e)=>{
-        console.log('wallect connect: connect');
-        console.log(e);
-      });
+     
       // session event - chainChanged/accountsChanged/custom events
       provider.on('session_event', (e)=>{
         console.log('wallect connect: session event');
