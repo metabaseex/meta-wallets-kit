@@ -3,7 +3,7 @@ import {  ChainConfig } from '../model';
 export const ethMain : ChainConfig = {
     networkId: 'eth_1',  
     showName: 'Ethereum Mainnet',
-    chainId: 1,
+    chainNo: 1,
     /** chain type,such as ethereum,arbitrum,okchain */
     chainType:'ethereum',
     /** Flag for test networks */

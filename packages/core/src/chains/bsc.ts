@@ -3,7 +3,7 @@ import {  ChainConfig } from '../model';
 export const bsc : ChainConfig = {
     networkId: 'bsc_56',  
     showName: 'BNB Smart Chain',
-    chainId: 56,
+    chainNo: 56,
     chainType:'bsc',
     isTestnet: false,
     nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },

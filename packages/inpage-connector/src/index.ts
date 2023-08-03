@@ -36,10 +36,7 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
         'Web3 provider not found! Please install the Web3 extension (e.g. Metamask) or use the Web3 browser (e.g. TrustWallet on your mobile device).',
       );
     }
-    
     let isMetamask = this.metaMask.isMetaMask();
-
-    
     //subscrib events
     super.subscribeEvents(provider);
 

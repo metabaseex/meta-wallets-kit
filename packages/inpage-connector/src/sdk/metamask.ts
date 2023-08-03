@@ -86,7 +86,7 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
      */
     public async switchOrAddChain(chainConfig?: ChainConfig) : Promise<number | null>{
         if(chainConfig == undefined) return null;
-        let chainId = chainConfig?.chainId;
+        let chainId = chainConfig?.chainNo;
         const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
         try {
            return  await window.ethereum.request({
@@ -95,7 +95,7 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
             });
         } catch (switchError) {
             // This error code indicates that the chain has not been added to MetaMask.
-            /* if (switchError?.code === 4902 && chainConfig) {
+             if (switchError?.code === 4902 && chainConfig) {
                 try {
                     await window.ethereum.request({
                         method: "wallet_addEthereumChain",
@@ -113,7 +113,7 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
                 }
             } else {
                 throw new Error("Couldn't switch networks. Error: " + switchError);
-            } */
+            } 
         }
 
         return null;

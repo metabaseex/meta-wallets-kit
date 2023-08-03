@@ -90,6 +90,7 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
             this.data.account = curAccount;
            
             this.emit('changed', { account: (curAccount as string), })
+            
         }
     }
     protected onDisconnect = async (error?: any) => {

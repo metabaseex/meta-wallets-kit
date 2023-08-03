@@ -8,7 +8,7 @@ export type ChainConfig = {
     /** Human-readable name */
     showName: string,
     /** ID in number form */
-    chainId: number,
+    chainNo: number,
     /** chain type,such as ethereum,arbitrum,okchain */
     chainType:string,
     /** Flag for test networks */
