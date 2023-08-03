@@ -66,6 +66,7 @@ export class CoinbaseConnector extends BaseConnector<CoinbaseConnectionPayload> 
   }
 
   public async getAccount(): Promise<string | null> {
+    return null;
   }
 
   /** event  ****/
