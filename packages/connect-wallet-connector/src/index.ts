@@ -93,7 +93,6 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     return account;
   }
 
-
   public async getChainId(): Promise<number | null>{
     if (!this.data) {
       return null;
@@ -133,17 +132,18 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
       return null;
     }
 
-    let chainId = chainConfig?.chainId;
-        const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
-        try {
-           return  await this.payload?.provider.request({
-                method: "wallet_switchEthereumChain",
-                params: [{ chainId: chainIdHex }],
-            });
-        } catch (switchError) {
-        }
+    let chainId = chainConfig?.chainNo;
+    const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
+    try {
+      return  await this.payload?.provider.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: chainIdHex }],
+      });
+    } catch (switchError) {
 
-        return null;
+    }
+
+    return null;
 
   }
   public async addTokenToWallet(token:TokenConfig): Promise<boolean | null> {

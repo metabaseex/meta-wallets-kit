@@ -1,17 +1,28 @@
 import { BaseConnector,TokenConfig,ChainWrapper } from '@meta-wallets-kit/core';
-import {  BaseConnectionPayload,} from '@meta-wallets-kit/core';
+import {  BaseConnectionPayload} from '@meta-wallets-kit/core';
 
 import { InpageProvider } from './@types/extend-window';
 import { MetaMaskWalletSdk } from './sdk/metamask';
-import { getAccount, getChainId } from '@meta-wallets-kit/core';
+import { getAccount, getChainId,ConnectorData } from '@meta-wallets-kit/core';
 
 /** Export Targets */
 export { InpageProvider };
+
+//type for metamask
+//see: https://docs.metamask.io/wallet/reference/provider-api/#message
+export interface ConnectInfo {
+  chainId: number;
+}
+export interface ProviderMessage {
+  type: string;
+  data: unknown;
+}
 
 export interface InpageConnectionPayload extends BaseConnectionPayload {
   provider: InpageProvider;
   isMetamask:boolean;
 }
+
 
 export class InpageConnector extends BaseConnector<InpageConnectionPayload> { 
   
@@ -38,7 +49,7 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
     }
     let isMetamask = this.metaMask.isMetaMask();
     //subscrib events
-    super.subscribeEvents(provider);
+    this.subScribeEvents();
 
     if(isMetamask){
         await this.metaMask.connect();
@@ -108,4 +119,26 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
       token.symbol,token.address,token.imageURL,token.decimals,token.type
     );
   }
+
+
+  private subScribeEvents(){
+    let provider = this.payload?.provider;
+    super.subscribeEvents(provider);
+    provider.on('connect',this.onConnect);
+    provider.on('message',this.onMessage)
+  }
+  private onConnect = (connectInfo: ConnectInfo)=>{
+    if(connectInfo!=null){
+        let data:ConnectorData ={
+          chainId: connectInfo.chainId,
+          account: '',
+        }
+        this.emit('connected',data);
+    }
+  }
+  private onMessage =  (message: ProviderMessage) =>{
+    if(message!=null){
+      this.emit('message',message);
+    }
+  };
 }

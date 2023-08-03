@@ -62,6 +62,7 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
         provider.on('chainChanged',this.onChainChanged);
         provider.on('accountsChanged',this.onAccountChanged);
         provider.on('disconnect',this.onDisconnect);
+       
     }
 
     public unSubScribeEvents(): void{
@@ -106,6 +107,7 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
         }
         this.emit('disconnect');
     }
+    
 }
 
 

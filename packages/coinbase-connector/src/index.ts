@@ -61,6 +61,13 @@ export class CoinbaseConnector extends BaseConnector<CoinbaseConnectionPayload> 
     return null;
   }
 
+  public async getChainId(): Promise<number | null>{
+    return null;
+  }
+
+  public async getAccount(): Promise<string | null> {
+  }
+
   /** event  ****/
 
   // public subscribeDisconnect(callback: DisconnectCallback): SubscribedObject {

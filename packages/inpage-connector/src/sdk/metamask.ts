@@ -3,6 +3,13 @@ import { IBaseConnectorSdk } from '@meta-wallets-kit/core';
 
 import { ChainConfig } from '@meta-wallets-kit/core';
 
+//All errors returned by the MetaMask provider follow this interface:
+//See: https://docs.metamask.io/wallet/reference/provider-api/#connect
+export interface ProviderRpcError extends Error {
+    message: string;
+    code: number;
+    data?: unknown;
+}
 export class MetaMaskWalletSdk implements IBaseConnectorSdk{
 
     constructor(){
