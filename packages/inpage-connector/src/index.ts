@@ -49,7 +49,7 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
     }
     let isMetamask = this.metaMask.isMetaMask();
     //subscrib events
-    this.subScribeEvents();
+    this.subScribeEvents(provider);
 
     if(isMetamask){
         await this.metaMask.connect();
@@ -121,8 +121,7 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
   }
 
 
-  private subScribeEvents(){
-    let provider = this.payload?.provider;
+  private subScribeEvents(provider:InpageProvider){
     super.subscribeEvents(provider);
     provider.on('connect',this.onConnect);
     provider.on('message',this.onMessage)
