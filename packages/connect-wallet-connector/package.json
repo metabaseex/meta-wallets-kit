@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@meta-wallets-kit/core": "^0.3.10",
-    "@walletconnect/ethereum-provider": "^2.7.6"
+    "@walletconnect/ethereum-provider": "^2.9.2"
   },
   "gitHead": "9d7d04a3aa51d6be9e5935a2a000279205826bb7"
 }
