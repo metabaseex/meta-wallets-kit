@@ -59,37 +59,37 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
       }
     }
 
-    this.payload = { provider, isMetamask };
+    super.payload = { provider, isMetamask };
     
-    return this.payload;
+    return super.payload;
   }
 
   public async getAccount(): Promise<string | null> {
-    if (!this.payload) {
+    if (!super.payload) {
         return null;
     }
 
     const { account, sendingInterface } = await getAccount(
-        this.payload.provider,
-        this.sendingInterface,
+      super.payload.provider,
+      super.sendingInterface,
     );
 
-    this.sendingInterface = sendingInterface;
+    super.sendingInterface = sendingInterface;
 
     return account;
   }
 
   public async getChainId(): Promise<number | null> {
-    if (!this.payload) {
+    if (!super.payload) {
       return null;
     }
 
     const { chainId, sendingInterface } = await getChainId(
-        this.payload.provider,
-        this.sendingInterface,
+      super.payload.provider,
+      super.sendingInterface,
     );
 
-    this.sendingInterface = sendingInterface;
+    super.sendingInterface = sendingInterface;
 
     return chainId;
 }
@@ -132,12 +132,12 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
           chainId: connectInfo.chainId,
           account: '',
         }
-        this.emit('connected',data);
+        super.emit('connected',data);
     }
   }
   private onMessage =  (message: ProviderMessage) =>{
     if(message!=null){
-      this.emit('message',message);
+      super.emit('message',message);
     }
   };
 }

@@ -39,7 +39,7 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     private async releaseProvider(){
         let provider = this.getProvider();
         if(provider!=null){
-          provider = null;
+          //provider = null;
         }
         this.payload = null;
     }
@@ -60,7 +60,7 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     public abstract addTokenToWallet(token:TokenConfig) : Promise<boolean | null>;
 
     /** common fuction end */
-    private getProvider() : BaseProvider | null {
+    public getProvider() : BaseProvider | null {
         if(!this.payload || !this.payload?.provider) return null;
         return this.payload.provider;
     }

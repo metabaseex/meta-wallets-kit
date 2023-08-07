@@ -48,7 +48,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
         // ... custom logic
         console.log('kits:connect wallet:');
         console.log(uri);
-        this.emit('message',{type:'display_uri',data: uri});
+        super.emit('message',{type:'display_uri',data: uri});
       });
      
       // session event - chainChanged/accountsChanged/custom events
@@ -69,14 +69,14 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
       await provider.connect();
     }
     
-    this.payload = { provider,};
+    super.payload = { provider,};
 
-    return this.payload;
+    return super.payload;
   }
 
   public async disconnect() {
     super.unSubScribeEvents();
-    let provider = this.payload?.provider;
+    let provider = super.getProvider();
     //remove listeners
     if(provider && provider.events){
       provider.events.removeAllListeners();
@@ -88,36 +88,36 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
 
   public async getAccount(): Promise<string | null> {
-    if (!this.data) {
+    if (!super.data) {
         return null;
     }
     let account = '';
-    if(this.data?.account == undefined){
+    if(super.data?.account == undefined){
       account = '';
     }else{
-      account = this.data?.account;
+      account = super.data?.account;
     }
     return account;
   }
 
   public async getChainId(): Promise<number | null>{
-    if (!this.data) {
+    if (!super.data) {
       return null;
     }
     let chainId = 0;
-    if(this.data?.chainId == undefined){
+    if(super.data?.chainId == undefined){
       chainId = 0;
     }else{
-      chainId = this.data?.chainId;
+      chainId = super.data?.chainId;
     }
     return chainId;
   }
 
   public async switchAccount(account: string): Promise<string | null> {
     if(account == null || account=='') return null;
-    if(this.payload == null || this.payload.provider == null) return null;
+    if(super.payload == null || super.payload.provider == null) return null;
     try {
-        const result: string[] = await this.payload?.provider.request({
+        const result: string[] = await super.payload?.provider.request({
         method: "wallet_requestPermissions",
         params: [
             {
@@ -132,7 +132,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
   public async switchOrAddChain(networkId:string): Promise<number | null> {
     if(networkId == null || networkId=='') return null;
-    if(this.payload == null || this.payload.provider == null) return null;
+    if(super.payload == null || super.payload.provider == null) return null;
     let chainList:ChainWrapper = new ChainWrapper();
     let chainConfig = chainList.getChainConfig(networkId);
     if(chainConfig == undefined){
@@ -142,7 +142,7 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     let chainId = chainConfig?.chainNo;
     const chainIdHex = "0x" + parseInt(chainId.toString(), 10).toString(16);
     try {
-      return  await this.payload?.provider.request({
+      return  await super.payload?.provider.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: chainIdHex }],
       });
@@ -155,8 +155,8 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
   }
   public async addTokenToWallet(token:TokenConfig): Promise<boolean | null> {
     if(token == null ) return null;
-    if(this.payload == null || this.payload.provider == null) return null;
-    return await this.payload?.provider.request({
+    if(super.payload == null || super.payload.provider == null) return null;
+    return await super.payload?.provider.request({
         method: "wallet_watchAsset",
         params: {
             type:token.type,
