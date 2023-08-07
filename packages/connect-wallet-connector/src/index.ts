@@ -26,14 +26,6 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     console.log('wallect config:');
     console.log(this.config);
     const provider = await EthereumProvider.init(this.config);
-    // Web3Modal is disabled by default, enable it during init() to display a QR code modal
-    //await provider.connect({
-    //   chains, // OPTIONAL chain ids
-    //   rpcMap, // OPTIONAL rpc urls
-    //   pairingTopic // OPTIONAL pairing topic
-    // })
-    // or
-    
     //subscribe events
     super.subscribeEvents(provider);
 
@@ -72,14 +64,14 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
       await provider.connect();
     }
     
-    this.payload = { provider,};
+    super.payload = { provider,};
 
-    return this.payload;
+    return super.payload;
   }
 
   public async disconnect() {
     super.unSubScribeEvents();
-    let provider = this.getProvider();
+    let provider = super.getProvider();
     //remove listeners
     if(provider && provider.events){
       provider.events.removeAllListeners();
