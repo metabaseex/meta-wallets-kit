@@ -78,6 +78,9 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     }
     if(provider != null){
       provider.disconnect();
+      if(provider.signer!=null){
+        provider.signer.session = null;
+      }
     }
     super.disconnect();
   }
