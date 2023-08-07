@@ -33,6 +33,14 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     public async disconnect() {
         //this.unSubScribeEvents();
         
+        await this.releaseProvider();
+    }
+
+    private async releaseProvider(){
+        let provider = this.getProvider();
+        if(provider!=null){
+          provider = null;
+        }
         this.payload = null;
     }
 
@@ -68,6 +76,12 @@ export abstract class BaseConnector<P extends BaseConnectionPayload> extends Eve
     public unSubScribeEvents(): void{
         try{
             let provider = this.getProvider();
+            //if(provider && provider.removeListener){
+                //provider.removeListener(this.onChainChanged,'chainChanged');
+                // provider.removeListener(this.onAccountChanged,'accountsChanged');
+                //provider.removeListener(this.onDisconnect,'disconnect');
+            //}
+            
             if(!provider || !provider.removeAllListeners) return;
             provider?.removeAllListeners();
         }finally{

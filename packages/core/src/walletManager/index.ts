@@ -159,7 +159,6 @@ export class Web3WalletsManager<W> {
 
   private resetState() {
     this.activeConnector = null;
-
     this.wallectClient.next(null);
     this.account.next(null);
     this.chainId.next(null);

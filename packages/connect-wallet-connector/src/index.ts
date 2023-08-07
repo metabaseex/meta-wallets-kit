@@ -76,8 +76,15 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
 
   public async disconnect() {
     super.unSubScribeEvents();
+    let provider = this.payload?.provider;
+    //remove listeners
+    if(provider && provider.events){
+      provider.events.removeAllListeners();
+    }
+    if(provider != null){
+      provider.disconnect();
+    }
     super.disconnect();
-    
   }
 
   public async getAccount(): Promise<string | null> {
