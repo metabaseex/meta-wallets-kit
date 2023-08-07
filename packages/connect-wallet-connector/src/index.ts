@@ -78,8 +78,10 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
     }
     if(provider != null){
       provider.disconnect();
-      if(provider.signer!=null){
-        provider.signer.session = null;
+      let signer = provider.signer;
+      if(signer){
+        await signer.cleanup();
+        console.log("--------------------signer clean up-------------");
       }
     }
     super.disconnect();
