@@ -64,14 +64,14 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
       await provider.connect();
     }
     
-    super.payload = { provider,};
+    this.payload = { provider,};
 
-    return super.payload;
+    return this.payload;
   }
 
   public async disconnect() {
     super.unSubScribeEvents();
-    let provider = super.getProvider();
+    let provider = this.getProvider();
     //remove listeners
     if(provider && provider.events){
       provider.events.removeAllListeners();
