@@ -39,5 +39,5 @@
     "@meta-wallets-kit/core": "^0.3.11",
     "@walletconnect/ethereum-provider": "^2.9.2"
   },
-  "gitHead": "98609ba5c8ec3e39e8eaf3d4d0980da81c1d98e6"
+  "gitHead": "846128c138cade6440e75f0ad01e4836663727f6"
 }

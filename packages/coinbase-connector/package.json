@@ -39,5 +39,5 @@
     "@coinbase/wallet-sdk": "^3.6.6",
     "@meta-wallets-kit/core": "^0.3.11"
   },
-  "gitHead": "9d7d04a3aa51d6be9e5935a2a000279205826bb7"
+  "gitHead": "846128c138cade6440e75f0ad01e4836663727f6"
 }
