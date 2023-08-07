@@ -17,11 +17,14 @@ export class ConnectWalletConnector extends BaseConnector<ConnectWalletConnectio
 
   constructor(private config: ConnectWalletConnectorConfig) {
     super();
+    this.config = config;
   }
 
   public async connect(): Promise<ConnectWalletConnectionPayload> {
     //const WalletConnectLibrary = await import('@walletconnect/ethereum-provider');
     //const ethProvider = WalletConnectLibrary.default;
+    console.log('wallect config:');
+    console.log(this.config);
     const provider = await EthereumProvider.init(this.config);
     // Web3Modal is disabled by default, enable it during init() to display a QR code modal
     //await provider.connect({
