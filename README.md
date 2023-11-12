@@ -1,5 +1,4 @@
-# Meta Wallets Kit [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
-
+# Meta Wallets Kit 
 This kit will help connect you dApp to different Ethereum wallets, e.g. Metamask. With meta-wallets-kit, you can create Web3WalletsManager and connect your dApp to the wallet of your choice using one of the supported wallet integrations.
 
 # Donate Address:
