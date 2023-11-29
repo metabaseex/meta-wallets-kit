@@ -11,3 +11,4 @@ packages/*/node_modules/.cache
 packages/*/node_modules
 *.log
 *.log
+*.name
