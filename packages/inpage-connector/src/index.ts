@@ -96,7 +96,6 @@ export class InpageConnector extends BaseConnector<InpageConnectionPayload> {
 
   public async switchAccount(account:string) : Promise<string | null>{
     if(account == null || account=='') return null;
-
     await this.metaMask.switchAccount(account);
     
     return account;

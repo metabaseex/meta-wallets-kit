@@ -101,8 +101,9 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
                 params: [{ chainId: chainIdHex }],
             });
         } catch (switchError) {
+            const error = switchError as any;
             // This error code indicates that the chain has not been added to MetaMask.
-             if (switchError?.code === 4902 && chainConfig) {
+            if (error?.code === 4902) {
                 try {
                     await window.ethereum.request({
                         method: "wallet_addEthereumChain",
@@ -121,10 +122,35 @@ export class MetaMaskWalletSdk implements IBaseConnectorSdk{
             } else {
                 throw new Error("Couldn't switch networks. Error: " + switchError);
             } 
+            
         }
 
         return null;
     };
+    /**
+     * get MetaMask chainId
+     */
+    public async getChainId() : Promise<number | null>{
+        const chainId = await window.ethereum?.request({ method: 'eth_chainId' });
+        return chainId;
+    }
+
+    public async getAccount() : Promise<string | null>{
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+          .catch((err) => {
+            if (err.code === 4001) {
+              // EIP-1193 userRejectedRequest error
+              // If this happens, the user rejected the connection request.
+            } else {
+              console.error(err);
+            }
+          });
+        if(accounts == null || accounts.length == 0){
+            return "";
+        }
+        const account = accounts[0];
+        return account;
+      }
 
 // Event handlers
 /**
